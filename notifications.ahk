@@ -20,7 +20,7 @@ loop MonitorGetCount() {
 
 flyOut(text := "This is a flyout", duration := 1000, position := "center", screen := 1) {
     ; Create GUI
-    static MyFlyout
+    
 
     positionLowerCase := StrLower(position)
     MyFlyout := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner")

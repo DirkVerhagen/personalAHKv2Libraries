@@ -35,13 +35,13 @@ YTgetSecondsLeft(browser := YTlibrary_Chrome){
     }
     catch error as e {  
         flyOut("Could not get YT Seconds Left")
-        return 0
+        return -1
     }
     Sleep(50)
     value := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
     lengthInSeconds := sliderEl.RangeValuePattern.Maximum
     fraction := value / lengthInSeconds
-    secondsLeft := lengthInSeconds - (fraction * lengthInSeconds)
+    secondsLeft := Floor(lengthInSeconds - (fraction * lengthInSeconds))
     return secondsLeft 
 }
 
@@ -60,9 +60,15 @@ YTgetTotalSeconds(browser := YTlibrary_Chrome) {
 }
 
 YTActivateYouTube(browserObject := YTlibrary_Chrome) {   
-    currentURL := browserObject.GetCurrentURL()
+    
     WinActivate(YTLibrary_chromeMatchString)
     WinWaitActive(YTLibrary_chromeMatchString)
+    try {
+        currentURL := browserObject.GetCurrentURL()
+    }
+    catch {
+        flyOut("error fetching url")
+    }
     if(!InStr(currentURL,"youtube")) { ;if the current tab is youtube then youtube incorrectly has tab elements in its page breaking selectTab
         try { ;SelectTab has a tendency to fail, should be replaced
             browserObject.SelectTab("YouTube",2,false) ;Look for YouTube in the title
@@ -90,15 +96,13 @@ YTSeek(browser := YTlibrary_Chrome, direction := "forward"){
                 Send "j" ; Hotkey for backward
         }
        
-    }
-    
+    }    
     catch error as e{
         MsgBox "Method YTSeek failed: " . e.Message
     }
 }
 
 YTGoTo(browser := YTlibrary_Chrome, n := 0) { ;Goes back to beginning by default
-    currentWindow:=WinExist("A")
     YTActivateYouTube(browser)
     try {
         playBUtton := browser.ElementExist({ClassName:"ytp-play-button ytp-button"})
@@ -110,9 +114,8 @@ YTGoTo(browser := YTlibrary_Chrome, n := 0) { ;Goes back to beginning by default
     }
     
     catch error as e{
-        MsgBox "Method YTGoTo failed: " . e.Message
+        flyOut("Method YTGoTo failed: " . e.Message)
     }
-    WinActivate(currentWindow)
 }
 
 YTChangeVolume(fixedSetting := 200, browser := YTlibrary_Chrome, increment := 10.0) {
@@ -139,7 +142,8 @@ YTChangeVolume(fixedSetting := 200, browser := YTlibrary_Chrome, increment := 10
                 }
                  try {
                      browser.JSExecute("document.querySelector('.html5-video-player').setVolume(" . Integer(newVolume) . ");")
-                     flyOut("Youtube Volume: " . Integer(newVolume),1000,"bottom")
+                     flyOut("Youtube Volume: " . Integer(newVolume),1000,"bottom",1)
+                     flyOut("Youtube Volume: " . Integer(newVolume),1000,"bottom",2)
                  }
                  catch error as e {
                      MsgBox("Could not execute volume script :" e.Message)
