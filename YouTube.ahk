@@ -22,6 +22,11 @@ YTgetFraction(browser := YTlibrary_Chrome) {
     }
 }
 
+/**
+ * 
+ * @param {UIA_Browser} browser  A UIA Browser object with the element ClassName ytp-progress-bar contained in it
+ * @returns {Number | Integer} the number of seconds left for the first ytp-progress-bar found in that browser
+ */
 YTgetSecondsLeft(browser := YTlibrary_Chrome){
     try {
         sliderEl := browser.FindElement({ClassName:"ytp-progress-bar"})
