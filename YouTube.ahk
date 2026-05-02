@@ -10,16 +10,17 @@ global YTlibrary_Chrome := UIA_Browser(YTLibrary_chromeMatchString)
 YTgetFraction(browser := YTlibrary_Chrome) {
     try {
         sliderEl := browser.FindElement({ClassName:"ytp-progress-bar"})
-        Sleep(50)
-        value := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
-        lengthInSeconds := sliderEl.RangeValuePattern.Maximum
-        fraction := value / lengthInSeconds
-        return fraction
+        
     }
     catch error as e {  
-        MsgBox "Could not get YT Fraction :" . e.Message
-        return 0
+        flyOut("Could not get YT Fraction")
+        return -1
     }
+    Sleep(50)
+    runTime := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
+    lengthInSeconds := sliderEl.RangeValuePattern.Maximum
+    fraction := runTime / lengthInSeconds
+    return fraction
 }
 
 /**
@@ -30,26 +31,27 @@ YTgetFraction(browser := YTlibrary_Chrome) {
 YTgetSecondsLeft(browser := YTlibrary_Chrome){
     try {
         sliderEl := browser.FindElement({ClassName:"ytp-progress-bar"})
-        Sleep(50)
-        value := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
-        lengthInSeconds := sliderEl.RangeValuePattern.Maximum
-        fraction := value / lengthInSeconds
-        secondsLeft := lengthInSeconds - (fraction * lengthInSeconds)
-        return secondsLeft  
+         
     }
     catch error as e {  
-        ;MsgBox "Could not get YT Seconds Left :" . e.Message
+        flyOut("Could not get YT Seconds Left")
         return 0
     }
+    Sleep(50)
+    value := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
+    lengthInSeconds := sliderEl.RangeValuePattern.Maximum
+    fraction := value / lengthInSeconds
+    secondsLeft := lengthInSeconds - (fraction * lengthInSeconds)
+    return secondsLeft 
 }
 
 YTgetTotalSeconds(browser := YTlibrary_Chrome) {
     try {
-        sliderEl := browser.FindElement({ClassName:"ytp-progress-bar"})
+        sliderEl := browser.WaitElement({ClassName:"ytp-progress-bar"}, 3000)
         
     }
     catch error as e {
-        flyOut "Not able to get total seconds: " e.Message
+        flyOut("Not able to get total seconds")
         return -1
     }
     Sleep(50)
@@ -63,11 +65,11 @@ YTActivateYouTube(browserObject := YTlibrary_Chrome) {
     WinWaitActive(YTLibrary_chromeMatchString)
     if(!InStr(currentURL,"youtube")) { ;if the current tab is youtube then youtube incorrectly has tab elements in its page breaking selectTab
         try { ;SelectTab has a tendency to fail, should be replaced
-            browserObject.SelectTab("YouTube",matchMode := 2,caseSensitive:=false) ;Look for YouTube in the title
+            browserObject.SelectTab("YouTube",2,false) ;Look for YouTube in the title
             sleep 400 ; Bigger sleep as switching tabs takes time to process unfortunately
         }
         catch error as e {
-            MsgBox "Could not select youtube tab :" . e.Message
+            flyOut("Could not select youtube tab")
         }
     }
     else {
@@ -77,7 +79,6 @@ YTActivateYouTube(browserObject := YTlibrary_Chrome) {
 }
 
 YTSeek(browser := YTlibrary_Chrome, direction := "forward"){
-    currentWindow:=WinExist("A")
     YTActivateYouTube(browser)
     try {
         playBUtton := browser.ElementExist({ClassName:"ytp-play-button ytp-button"})
@@ -94,7 +95,6 @@ YTSeek(browser := YTlibrary_Chrome, direction := "forward"){
     catch error as e{
         MsgBox "Method YTSeek failed: " . e.Message
     }
-    WinActivate(currentWindow)
 }
 
 YTGoTo(browser := YTlibrary_Chrome, n := 0) { ;Goes back to beginning by default
@@ -118,7 +118,6 @@ YTGoTo(browser := YTlibrary_Chrome, n := 0) { ;Goes back to beginning by default
 YTChangeVolume(fixedSetting := 200, browser := YTlibrary_Chrome, increment := 10.0) {
 
     try {
-        currentWindow:=WinExist("A")
          YTActivateYouTube(browser)
          ; we can use this to try how fast we need to set the wait in activate youtube. If the tab is active virtually none
          try {
@@ -154,7 +153,7 @@ YTChangeVolume(fixedSetting := 200, browser := YTlibrary_Chrome, increment := 10
          catch error as e{
                  MsgBox("Could not active youtube during volume change :" e.Message)
          }
-        WinActivate(currentWindow)
+
      
     }
 
@@ -167,10 +166,14 @@ YTPlayPause(browser := YTlibrary_Chrome) {
             if(playBUtton){
                 playBUtton.Click()
             }
+            else {
+                ; we can still try the hotkey, results may vary based on whether activateyoutube succeeeded
+                Send("k")
+            }
            
         }
         catch error as e{
-            MsgBox "Could not play/pas YT :" e.Message
+            flyOut("Could not play/pause YT :" e.Message)
         }
     }
     

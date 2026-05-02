@@ -13,7 +13,6 @@ loop MonitorGetCount() {
         MonitorTwoLTRBCoords := [Left,Top,Right,Bottom]
         MonitorTwoLengthHeight := [(Right-Left),(Bottom-Top)]
         coordstring := MonitorTwoLTRBCoords[1] . "," . MonitorTwoLTRBCoords[2] . "," . MonitorTwoLTRBCoords[3] . "," . MonitorTwoLTRBCoords[4] . " - " . MonitorTwoLengthHeight[1] . "," . MonitorTwoLengthHeight[2]
-        flyOut(coordstring,5000,"center",2)
     }
 
 }
@@ -31,9 +30,10 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
 
     ; Detect coordinates for x screens
     
-    monitorTwoX := (A_ScreenWidth + (MonitorTwoLengthHeight[1] / 2))
-    MonitorTwoY := MonitorTwoLTRBCoords[2] + (MonitorTwoLengthHeight[2]/2)
-    ;Msgbox "x: " . monitorTwoX . " y: " . MonitorTwoY
+    monitorTwoX := (A_ScreenWidth + (MonitorTwoLengthHeight[1] / 2))-400
+    ;The Y position we can get from the bottom and top coords rather than in this complicated manner
+    ;MonitorTwoY := MonitorTwoLTRBCoords[2] + (MonitorTwoLengthHeight[2]/2)
+
     if(positionLowerCase =="top")
         switch screen {
         case 1:

@@ -64,10 +64,8 @@ HandleCumulativeTap(keyID, actionFunc, increment, unit) { ; Similar to HandleTap
         incrementUnit := unit,
         timers.Delete(keyID),
         actionFunc(count, totalIncrement,incrementUnit) ; Execute associated function with number of taps as argument and the total value of your increment
-        ; remove this flyout but keep it for testing for now
-        ;flyOut("Executing " . actionFunc . " with total increment of " . totalIncrement, 1000) 
     )
 
     timers[keyID] := timerTick
-    SetTimer(timerTick, -cumulativeTapTimeOut)
+    SetTimer(timerTick, -cumulativeTapTimeOut) ; also a subtle difference, typically you want this a bit higher than normal taptimeout
 }
