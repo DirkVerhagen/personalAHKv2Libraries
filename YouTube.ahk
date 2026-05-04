@@ -6,7 +6,7 @@
 
 global YTLibrary_chromeMatchString := "ahk_exe chrome.exe"
 global YTlibrary_Chrome := UIA_Browser(YTLibrary_chromeMatchString)
-
+global errorDuration := 2000
 
 
 YTgetRunTime(browser := YTLibrary_Chrome) {
@@ -19,7 +19,7 @@ YTgetRunTime(browser := YTLibrary_Chrome) {
         return -1
     }
     if(IsInteger(sliderEl)) {
-        flyOut "FindElement returned an integer"
+        flyOut("FindElement returned an integer",errorDuration,,2)
         return -1
     }
     runTime := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
@@ -32,11 +32,11 @@ YTgetTotalSeconds(browser := YTlibrary_Chrome) {
         
     }
     catch error as e {
-        flyOut("Not able to get total seconds")
+        flyOut("Not able to get total seconds",errorDuration,,2)
         return -1
     }
     if(IsInteger(sliderEl)) {
-        flyOut "FindElement returned an integer"
+        flyOut("FindElement returned an integer",errorDuration,,2)
         return -1
     }
     totalSeconds := sliderEl.RangeValuePattern.Maximum
@@ -71,7 +71,7 @@ YTActivateYouTube(browserObject := YTlibrary_Chrome) {
         currentURL := browserObject.GetCurrentURL()
     }
     catch {
-        flyOut("error fetching url")
+        flyOut("error fetching url",errorDuration,,2)
         return
     }
     if(!InStr(currentURL,"youtube")) { ;if the current tab is youtube then youtube incorrectly has tab elements in its page breaking selectTab
@@ -103,7 +103,7 @@ YTSeek(browser := YTlibrary_Chrome, direction := "forward"){
        
     }    
     catch error as e{
-        MsgBox "Method YTSeek failed: " . e.Message
+        flyOut("Method YTSeek failed: " . e.Message,errorDuration,,2)
     }
 }
 
@@ -151,16 +151,16 @@ YTChangeVolume(fixedSetting := 200, browser := YTlibrary_Chrome, increment := 10
                      flyOut("Youtube Volume: " . Integer(newVolume),1000,"bottom",2)
                  }
                  catch error as e {
-                     MsgBox("Could not execute volume script :" e.Message)
+                     flyOut("Could not execute volume script :" e.Message,errorDuration,,2)
                      }        
                  }
              }
              catch error as e{
-                 MsgBox("Could not find volume panel :" e.Message)
+                 flyOut("Could not find volume panel :" e.Message,errorDuration,,2)
              }
          }
          catch error as e{
-                 MsgBox("Could not active youtube during volume change :" e.Message)
+                 flyOut("Could not active youtube during volume change :" e.Message,errorDuration,,2)
          }
 
      
@@ -182,7 +182,7 @@ YTPlayPause(browser := YTlibrary_Chrome) {
            
         }
         catch error as e{
-            flyOut("Could not play/pause YT :" e.Message)
+            flyOut("Could not play/pause YT :" e.Message,errorDuration,,2)
         }
     }
     

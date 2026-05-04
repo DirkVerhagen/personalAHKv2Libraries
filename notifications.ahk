@@ -17,18 +17,38 @@ loop MonitorGetCount() {
 
 }
 
+infoPanel(content := "content", side := "left") {
+    infoPanel := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner")
+    infoPanel.BackColor := "333333"
+    infoPanel.SetFont("cWhite s14", "Segoe UI")
+    infoPanel.Add("Text",, content)
+    WinSetTransparent(200,infoPanel)
+
+    switch side {
+        case "left":
+            posX := 50
+        case "right":
+            posX := 3100
+    }
+
+    infoPanel.Show("x" posX "y100 w300 NoActivate")
+    infoPanel.OnEvent("ContextMenu",panelClicked)
+    panelClicked(*) {
+        infoPanel.Hide()
+    }
+}
 
 flyOut(text := "This is a flyout", duration := 1000, position := "center", screen := 1, sidebar := false) {
     ; Create GUI
     positionLowerCase := StrLower(position)
-    MyFlyout := Gui("+MaxSize300x +AlwaysOnTop -Caption +ToolWindow +Owner +MaxSize500x")
+    MyFlyout := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner")
     MyFlyout.BackColor := "333333"
     MyFlyout.SetFont("cWhite s14", "Segoe UI")
     MyFlyout.Add("Text",, text)
     MyFlyout.GetClientPos(,,&myFlyOutWidth,)
     WinSetTransparent(200,MyFlyout)
     if(screen == 0){
-        secondFlyout := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner +MaxSize500x")
+        secondFlyout := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner")
         secondFlyout.BackColor := "333333"
         secondFlyout.SetFont("cWhite s14", "Segoe UI")
         secondFlyout.Add("Text",, text)
