@@ -7,42 +7,23 @@
 global YTLibrary_chromeMatchString := "ahk_exe chrome.exe"
 global YTlibrary_Chrome := UIA_Browser(YTLibrary_chromeMatchString)
 
-YTgetFraction(browser := YTlibrary_Chrome) {
+
+
+YTgetRunTime(browser := YTLibrary_Chrome) {
     try {
         sliderEl := browser.FindElement({ClassName:"ytp-progress-bar"})
         
     }
-    catch error as e {  
-        flyOut("Could not get YT Fraction")
+    catch error as e {  ;probably called with a photo iso movie
+        ;flyOut("Could not get YT Fraction")
         return -1
     }
-    Sleep(50)
+    if(IsInteger(sliderEl)) {
+        flyOut "FindElement returned an integer"
+        return -1
+    }
     runTime := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
-    lengthInSeconds := sliderEl.RangeValuePattern.Maximum
-    fraction := runTime / lengthInSeconds
-    return fraction
-}
-
-/**
- * 
- * @param {UIA_Browser} browser  A UIA Browser object with the element ClassName ytp-progress-bar contained in it
- * @returns {Number | Integer} the number of seconds left for the first ytp-progress-bar found in that browser
- */
-YTgetSecondsLeft(browser := YTlibrary_Chrome){
-    try {
-        sliderEl := browser.FindElement({ClassName:"ytp-progress-bar"})
-         
-    }
-    catch error as e {  
-        flyOut("Could not get YT Seconds Left")
-        return -1
-    }
-    Sleep(50)
-    value := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
-    lengthInSeconds := sliderEl.RangeValuePattern.Maximum
-    fraction := value / lengthInSeconds
-    secondsLeft := Floor(lengthInSeconds - (fraction * lengthInSeconds))
-    return secondsLeft 
+    return runTime * 1
 }
 
 YTgetTotalSeconds(browser := YTlibrary_Chrome) {
@@ -54,20 +35,44 @@ YTgetTotalSeconds(browser := YTlibrary_Chrome) {
         flyOut("Not able to get total seconds")
         return -1
     }
-    Sleep(50)
-    value := sliderEl.RangeValuePattern.Maximum
-    return value
+    if(IsInteger(sliderEl)) {
+        flyOut "FindElement returned an integer"
+        return -1
+    }
+    totalSeconds := sliderEl.RangeValuePattern.Maximum
+    return totalSeconds * 1
 }
 
+
+
+/**
+ * 
+ * @param {UIA_Browser} browser  A UIA Browser object with the element ClassName ytp-progress-bar contained in it
+ * @returns {Number | Integer} the number of seconds left for the first ytp-progress-bar found in that browser
+ */
+YTgetSecondsLeft(browser := YTlibrary_Chrome){
+    runtime := YTgetRunTime(browser)
+    lengthInSeconds := YTgetTotalSeconds(browser)
+    fraction := runtime / lengthInSeconds
+    secondsLeft := lengthInSeconds - (fraction * lengthInSeconds)
+    return secondsLeft 
+}
+YTgetFraction(browser := YTlibrary_Chrome) {
+    runTime :=  YTgetRunTime(browser)
+    lengthInSeconds := YTgetTotalSeconds(browser)
+    fraction := runTime / lengthInSeconds
+    return fraction
+}
 YTActivateYouTube(browserObject := YTlibrary_Chrome) {   
     
     WinActivate(YTLibrary_chromeMatchString)
-    WinWaitActive(YTLibrary_chromeMatchString)
+    sleep 500
     try {
         currentURL := browserObject.GetCurrentURL()
     }
     catch {
         flyOut("error fetching url")
+        return
     }
     if(!InStr(currentURL,"youtube")) { ;if the current tab is youtube then youtube incorrectly has tab elements in its page breaking selectTab
         try { ;SelectTab has a tendency to fail, should be replaced
