@@ -81,3 +81,54 @@ getNextCycleItem(collection, currentindex) {
 
     return collection[newIndex]
 }
+arrayIndexToMultiSelectString(index, items, cycling := false) {
+    output := ""
+    if (cycling)
+        output .= "< "
+    for i, item in items {
+        ;; add to the string
+        if (i == index) {
+            output .= " [" . StrUpper(items[i]) . "]"
+        }
+        else {
+            output .= " " . items[i]
+        }
+    }
+    if (cycling)
+        output .= " >"
+    return output
+}
+arrayIndexToCarousselString(index, items) {
+
+    mainItem := items[index]
+
+    leftItemIndex := Mod(index - 2 + items.Length, items.Length) + 1 ; we pretend arrays start at 1 for ahk's sake
+    rightItemIndex := Mod(Index, items.Length) + 1
+    leftItem := items[leftItemIndex]
+    rightItem := items[rightItemIndex]
+
+    carousselString := leftItem . " [" . StrUpper(mainItem) . "] " . rightItem
+    return carousselString
+}
+
+TimeToSecs(timeString) { ; MIGHT BE DUPLICATE OF CONVERTSHORT....
+    ; Removes spaces and other things to keep an TT:TT:[TT] format
+    timeString := RegExReplace(timeString, "[^\d:]")
+    parts := StrSplit(timeString, ":")
+
+    seconds := 0
+    if (parts.Length = 2) { ; MM:SS
+        seconds := (Integer(parts[1]) * 60) + Integer(parts[2])
+    }
+    else if (parts.Length = 3) { ; HH:MM:SS
+        seconds := (Integer(parts[1]) * 3600) + (Integer(parts[2]) * 60) + Integer(parts[3])
+    }
+
+    return seconds
+}
+IndexOf(Arr, Value) {
+    for i, v in Arr
+        if (v = Value)
+            return i
+    return 0 ; Returns 0 if not found
+}
