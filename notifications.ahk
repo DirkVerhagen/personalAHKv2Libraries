@@ -18,7 +18,7 @@ loop MonitorGetCount() {
 
 }
 
-infoPanel(content := "content", side := "left", keyToToggle := "") {
+infoPanel(content := "content", side := "left", isVisible := true, keyToToggle := "") {
     if (isSet(infoPanel)) {
         textItem := infoPanel["contenttext"]
         textItem.value := content
@@ -53,16 +53,19 @@ infoPanel(content := "content", side := "left", keyToToggle := "") {
             if (isVisible)
                 infoPanel.Hide()
             if (!isVisible)
-                infoPanel.Show("x" posX "y100 w300 NoActivate")
+                infoPanel.Show("x" posX "y100 w300 h1000 NoActivate")
         }
         else {
             SendEvent("{" key "}")
         }
 
     }
-
-    infoPanel.Show("x" posX "y100 w300 NoActivate")
     infoPanel.OnEvent("ContextMenu", panelClicked)
+    if (isVisible)
+        infoPanel.Show("x" posX "y100 w300 h700 NoActivate")
+    else
+        infoPanel.Hide()
+
 
 }
 
