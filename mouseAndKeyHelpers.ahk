@@ -1,3 +1,8 @@
+#include notifications.ahk
+InstallMouseHook()
+InstallKeybdHook()
+
+
 SmoothScrollDown(n := 3) {
     Loop n {
         SendEvent("{WheelDown}")
@@ -17,16 +22,20 @@ keyTimes(key, n) {
     }
 }
 screenMiddleClick() {
+    currentCoordMode := A_CoordModeMouse
     CoordMode("Mouse", "Screen")
-    MouseClick("Left", A_ScreenWidth / 2, A_ScreenHeight / 2, 1, 0, ,)
-    CoordMode("Mouse", "Client")
+    MouseMove(A_ScreenWidth / 2, A_ScreenHeight / 2, 1)
+    Click()
+    CoordMode("Mouse", currentCoordMode)
 }
 screenMiddleMove() {
+    currentCoordMode := A_CoordModeMouse
     CoordMode("Mouse", "Screen")
     MouseMove(A_ScreenWidth / 2, A_ScreenHeight / 2)
-    CoordMode("Mouse", "Client")
+    CoordMode("Mouse", currentCoordMode)
 }
 keepWiggling() {
+    flyout("Everyday I'm wigglin", , "bottom")
     sleep 100 ;allow time for A_TimeIdlePhysical to accumulate)
     while (A_TimeIdlePhysical > 50) {
         mouseWiggle()
