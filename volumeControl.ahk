@@ -57,7 +57,7 @@ changeDeviceVolumeWith(n) {
     Run(command, , "Hide")
     sleep 100
     newVolume := GetVolume(deviceToUpdate)
-    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom")
+    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", , , newVolume)
 }
 
 AppVol(Target := "A", Level := 0) {
