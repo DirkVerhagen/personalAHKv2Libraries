@@ -3,7 +3,6 @@ global MonitorOneLTRBCoords := [0, 0, 0, 0]
 global MonitorTwoLTRBCoords := [0, 0, 0, 0]
 global MonitorOneLengthHeight := [0, 0]
 global MonitorTwoLengthHeight := [0, 0]
-global ProgressWidth := 0
 loop MonitorGetCount() {
     MonitorGet(A_Index, &Left, &Top, &Right, &Bottom)
     if (A_Index == 2) { ; What we refer to as mon 1 is actually monitor 2 in AHK (and windows)
@@ -13,7 +12,7 @@ loop MonitorGetCount() {
     else if (A_Index == 1) {
         MonitorTwoLTRBCoords := [Left, Top, Right, Bottom]
         MonitorTwoLengthHeight := [(Right - Left), (Bottom - Top)]
-        coordstring := MonitorTwoLTRBCoords[1] . "," . MonitorTwoLTRBCoords[2] . "," . MonitorTwoLTRBCoords[3] . "," . MonitorTwoLTRBCoords[4] . " - " . MonitorTwoLengthHeight[1] . "," . MonitorTwoLengthHeight[2]
+        ; coordstring := MonitorTwoLTRBCoords[1] . "," . MonitorTwoLTRBCoords[2] . "," . MonitorTwoLTRBCoords[3] . "," . MonitorTwoLTRBCoords[4] . " - " . MonitorTwoLengthHeight[1] . "," . MonitorTwoLengthHeight[2]
     }
 
 }
@@ -76,14 +75,11 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
     FlyOut1.BackColor := "333333"
     FlyOut1.SetFont("cWhite s14", "Segoe UI")
     FlyOut1.Add("Text", "Section", "`n" text "`n")
-    FlyOut1.GetClientPos(, , &myFlyOutWidth,)
+    FlyOut1.Show("Hide")
+    FlyOut1.GetClientPos(, , &flyOutWidth,)
     FlyOut1.MarginY := 0
-    progressBar := FlyOut1.add("Text", "Section x0 w" myFlyOutWidth " h5 Backgrounddab327")
+    progressBar := FlyOut1.add("Text", "Section x0 w" flyOutWidth " h5 Backgrounddab327")
     progressBar.progress := 100
-    /*     FlyOut1.OnEvent("Size", FlyOut1Resize)
-        FlyOut1Resize(GuiObj, MinMax, Width, Height) {
-            progressBar.Move(, , width)
-    } */
     WinSetTransparent(200, FlyOut1)
     monitorTwoX := 400 ; ensure it's always set
     if (screen == 0) {
@@ -91,13 +87,15 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
         FlyOut2.BackColor := "333333"
         FlyOut2.SetFont("cWhite s14", "Segoe UI")
         FlyOut2.Add("Text", , text)
+        ; by definition this should have the same width as flyout1 so not checking it
 
         WinSetTransparent(200, FlyOut2)
     }
     else {
         if (!sideBar)
-            monitorTwoX := A_ScreenWidth + 300
-        else MonitorTwoX := A_ScreenWidth + 30
+            monitorTwoX := A_ScreenWidth + (MonitorTwoLengthHeight[1] / 2)  ; change this to be  the screenwidth plus the second screen width
+        else
+            MonitorTwoX := A_ScreenWidth + 30
     }
 
     ; determine coordinates for first screen
@@ -105,7 +103,7 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
         monitorOneX := 30
     }
     else {
-        monitorOneX := (A_ScreenWidth / 2) - (myFlyOutWidth / 2)
+        monitorOneX := (A_ScreenWidth / 2)
     }
 
     ;The Y position we can get from the bottom and top coords rather than in this complicated manner
@@ -154,29 +152,29 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
                 Screen2posY := MonitorTwoLTRBCoords[4] - 100
         }
     else {
-        MsgBox "invalid position received"
+        MsgBox "invalid position received for notification, using 100,100"
         posX := 100
         posY := 100
     }
-
+    posX := posX - (flyOutWidth / 2)
+    if (screen == 0) {
+        Screen1posX := Screen1posX - (flyOutWidth / 2)
+        Screen2posX := Screen2posX - (flyOutWidth / 2)
+    }
     ; Show the GUI, but do not activate it / set focus
     switch screen {
         case 1:
-            FlyOut1.Show("x" monitorOneX " y" posY " NoActivate")
-            FlyOut1.GetClientPos(, , &flyOut1Width)
-            progressBar.Move(, , flyOut1Width)
+            FlyOut1.Show("x" posX " y" posY " NoActivate")
+            FlyOut1.GetClientPos(, , &flyOutWidth)
+            progressBar.Move(, , flyOutWidth)
         case 2:
-            FlyOut1.Show("x" (posX) " y" posY " NoActivate")
-            FlyOut1.GetClientPos(, , &flyOut1Width)
-            monitorTwoX := (A_ScreenWidth + (MonitorTwoLengthHeight[1] / 2)) - (flyOut1Width / 2)
-            FlyOut1.Move(monitorTwoX)
-        case 0:
-            FlyOut1.Show("x" monitorOneX " y" Screen1posY " NoActivate")
-            FlyOut2.Show("x" (Screen2posX) " y" Screen2posY " NoActivate")
-            FlyOut1.GetClientPos(, , &flyOut1Width)
-            monitorTwoX := (A_ScreenWidth + (MonitorTwoLengthHeight[1] / 2)) - (flyOut1Width / 2)
-            FlyOut1.Move(monitorTwoX)
+            FlyOut1.Show("x" posX " y" posY " NoActivate")
+            FlyOut1.GetClientPos(, , &flyOutWidth)
+            progressBar.Move(, , flyOutWidth)
 
+        case 0:
+            FlyOut1.Show("x" Screen1posX " y" Screen1posY " NoActivate")
+            FlyOut2.Show("x" Screen2posX " y" Screen2posY " NoActivate")
     }
     ; timer to remove it again
 
