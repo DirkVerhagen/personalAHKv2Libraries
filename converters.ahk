@@ -1,7 +1,19 @@
+/************************************************************************
+ * @description 
+ * @author 
+ * @date 2026/05/19
+ * @version 0.0.0
+ ***********************************************************************/
+
+/**
+ * 
+ * @param seconds total number of seconds
+ * @returns {String} Outputs a string formatted as hh:mm:ss (or mm:ss or ss)
+ */
 secondsToTimeString(seconds) {
     hours := Floor(seconds / 3600)
     minutes := Floor(Mod(seconds, 3600) / 60)
-    seconds := Mod(seconds, 60)
+    newSeconds := Floor(Mod(seconds, 60))
 
 
     if (seconds < 1) {
@@ -9,15 +21,18 @@ secondsToTimeString(seconds) {
     }
 
     if (hours < 1)
-        formattedTime := Format("{:02}:{:02}", minutes, seconds) . ""
-    else if (hours < 1 and minutes < 1)
-        formattedTime := Format("{:02}", seconds) . ""
+        formattedTime := Format("{:02d}:{:02d}", minutes, newSeconds)
     else
-        formattedTime := Format("{:02}:{:02}:{:02}", hours, minutes, seconds) . ""
+        formattedTime := Format("{:02d}:{:02d}:{:02d}", hours, minutes, newSeconds)
+
 
     return formattedTime
 }
-
+/**
+ * Given a string in hh:mm:ss format this function returns the number of seconds
+ * @param str A time string in the format hh:mm:ss
+ * @returns {Integer} The number of seconds this string represents
+ */
 convertShortStringToSeconds(str) {
     if !RegExMatch(str, "(\d+:[\d:]+)", &match)
         return 0
@@ -32,6 +47,11 @@ convertShortStringToSeconds(str) {
     } else if (parts.Length == 2) { ; MM:SS
         seconds += parts[1] * 60   ; Minuten
         seconds += parts[2]        ; Seconden
+    } else if (parts.Length == 1) { ; SS
+        seconds += parts[1]
+    }
+    else { ;not able to split the string
+        return -1
     }
 
     return seconds
