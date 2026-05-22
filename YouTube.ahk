@@ -183,9 +183,11 @@ YTPlayPause(browser := YTlibrary_Chrome) {
             ; we can still try the hotkey, results may vary based on whether activateyoutube succeeeded
             Send("k")
         }
+        return 1
 
     }
     catch error as e {
         flyOut("Could not play/pause YT :" e.Message, errorDuration, , 2)
+        return 0
     }
 }
