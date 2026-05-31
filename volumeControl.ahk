@@ -2,8 +2,8 @@
 #include notifications.ahk
 
 global svv := "C:\svol\svcl.exe"
-global soundOptions := ["Headphones", "Realtek", "Chrome.exe", "Firefox.exe", "DefaultRenderDevice"]
-global soundOptionIndex := 1
+global soundOptions := ["YouTube", "Realtek", "Chrome.exe", "Firefox.exe", "DefaultRenderDevice"]
+global soundOptionIndex := 2
 
 reportAllVolumes() {
     global soundOptionIndex
@@ -53,10 +53,17 @@ changeDeviceVolumeWith(n) {
     global soundOptionIndex
     global soundOptions
     deviceToUpdate := soundOptions[soundOptionIndex]
-    command := svv ' /ChangeVolume ' deviceToUpdate ' ' n ''
-    Run(command, , "Hide")
-    sleep 100
-    newVolume := GetVolume(deviceToUpdate)
+    if (deviceToUpdate == "YouTube") {
+        if HasMethod(YTChangeVolume()) {
+            YTChangeVolume(, , n)
+        }
+    }
+    else {
+        command := svv ' /ChangeVolume ' deviceToUpdate ' ' n ''
+        Run(command, , "Hide")
+        sleep 100
+        newVolume := GetVolume(deviceToUpdate)
+    }
     FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", , , newVolume)
 }
 

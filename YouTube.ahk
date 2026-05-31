@@ -1,11 +1,10 @@
 #Requires AutoHotkey v2.0
-
+#include matchstrings.ahk
 #include notifications.ahk
 #Include ..\..\lib\UIA.ahk
 #Include ..\..\lib\UIA_Browser.ahk
-
-global YTLibrary_chromeMatchString := "ahk_exe chrome.exe"
-global YTlibrary_Chrome := UIA_Browser(YTLibrary_chromeMatchString)
+WinWait(chromeMatchString)
+global YTlibrary_Chrome := UIA_Browser(chromeMatchString)
 global errorDuration := 2000
 
 
@@ -152,7 +151,6 @@ YTChangeVolume(fixedSetting := 200, browser := YTlibrary_Chrome, increment := 10
                 try {
                     browser.JSExecute("document.querySelector('.html5-video-player').setVolume(" . Integer(newVolume) . ");")
                     flyOut("Youtube Volume: " . Integer(newVolume), 1000, "bottom", 1)
-                    flyOut("Youtube Volume: " . Integer(newVolume), 1000, "bottom", 2)
                 }
                 catch error as e {
                     flyOut("Could not execute volume script :" e.Message, errorDuration, , 2)
