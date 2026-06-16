@@ -14,6 +14,11 @@ Windows Matchstrings I use, feel free to reuse, nothing special
 
 To make my code a bit more readable and to quickly experiment with some features
 
+*notifications.ahk*
+Provides several types of notifications
+- Flyout: A flyout will stay on the screen for the specified duration, either on the top, center or bottom of your screen. If duration is longer than 4 seconds a progress bar until it disappears will also be shown. This can also be set to a value (e.g. if you set volume and provide feedback). I find this a lot better for quick debugging than modal boxes - and it works very well for quick feedback on hotkeys.
+- infoScreen: A semi transparant screen. You can assign it a toggle hotkey and it will show on the side of your screen with your specified content
+
 *ScreenBorder.ahk*
 
 Provides functions to create a colored border around your screen, and a blink function
