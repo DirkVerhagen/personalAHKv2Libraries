@@ -3,6 +3,11 @@ global MonitorOneLTRBCoords := [0, 0, 0, 0]
 global MonitorTwoLTRBCoords := [0, 0, 0, 0]
 global MonitorOneLengthHeight := [0, 0]
 global MonitorTwoLengthHeight := [0, 0]
+global flyOutduration_ErrorMessage := 3000
+global flyOutduration_KeyWorkedMessage := 500
+global flyOutduration_Warning := 2000
+global flyOutduration_StatusUpdate := 1000
+global flyOutDuration_Informational := 3000
 loop MonitorGetCount() {
     MonitorGet(A_Index, &Left, &Top, &Right, &Bottom)
     if (A_Index == 2) { ; What we refer to as mon 1 is actually monitor 2 in AHK (and windows)

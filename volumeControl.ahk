@@ -2,24 +2,21 @@
 #include notifications.ahk
 
 global svv := "C:\svol\svcl.exe"
-global soundOptions := ["YouTube", "Realtek", "Chrome.exe", "Firefox.exe", "DefaultRenderDevice"]
+global soundOptions := ["Realtek", "Brave.exe", "Firefox.exe"]
 global soundOptionIndex := 2
 
 reportAllVolumes() {
-    global soundOptionIndex
     global soundOptions
     reportString := ""
     for index, item in soundOptions {
         reportString .= " " . getVolume(item) . " : " . item . "`n"
 
     }
-    flyOut(reportString, 5000, "top", 1, true)
+    flyOut(reportString, 5000, "top", 1, false)
 
 }
 
-GetVolume(application := "chrome.exe") {
-
-
+GetVolume(application := "brave.exe") {
     ; 1. Clear clipboard to ensure we catch the new value
     A_Clipboard := ""
 

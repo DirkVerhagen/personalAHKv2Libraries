@@ -1,14 +1,21 @@
 #Requires AutoHotkey v2.0
 #include matchstrings.ahk
 #include notifications.ahk
+#include ..\..\lib\personalVariables.ahk
 #Include ..\..\lib\UIA.ahk
 #Include ..\..\lib\UIA_Browser.ahk
-WinWait(chromeMatchString)
-global YTlibrary_Chrome := UIA_Browser(chromeMatchString)
+if (!WinExist(ffBrowserMatchString)) {
+    Run(fireFoxExecutable)
+    if (!WinWait(ffBrowserMatchString, , 5000)) {
+        MsgBox "Firefox did not start in time, exiting script"
+        ExitApp()
+    }
+}
+global DefaultYTBrowserFirefox := UIA_Browser(ffBrowserMatchString)
 global errorDuration := 2000
 
 
-YTgetRunTime(browser := YTLibrary_Chrome) {
+YTgetRunTime(browser := DefaultYTBrowserFirefox) {
     try {
         sliderEl := browser.FindElement({ ClassName: "ytp-progress-bar" })
 
@@ -31,7 +38,7 @@ YTgetRunTime(browser := YTLibrary_Chrome) {
     return Number(runTime)
 }
 
-YTgetTotalSeconds(browser := YTlibrary_Chrome) {
+YTgetTotalSeconds(browser := DefaultYTBrowserFirefox) {
     try {
         sliderEl := browser.WaitElement({ ClassName: "ytp-progress-bar" }, 3000)
 
@@ -54,22 +61,22 @@ YTgetTotalSeconds(browser := YTlibrary_Chrome) {
  * @param {UIA_Browser} browser  A UIA Browser object with the element ClassName ytp-progress-bar contained in it
  * @returns {Number | Integer} the number of seconds left for the first ytp-progress-bar found in that browser
  */
-YTgetSecondsLeft(browser := YTlibrary_Chrome) {
+YTgetSecondsLeft(browser := DefaultYTBrowserFirefox) {
     runtime := YTgetRunTime(browser)
     lengthInSeconds := YTgetTotalSeconds(browser)
     fraction := runtime / lengthInSeconds
     secondsLeft := lengthInSeconds - (fraction * lengthInSeconds)
     return secondsLeft
 }
-YTgetFraction(browser := YTlibrary_Chrome) {
+YTgetFraction(browser := DefaultYTBrowserFirefox) {
     runTime := YTgetRunTime(browser)
     lengthInSeconds := YTgetTotalSeconds(browser)
     fraction := runTime / lengthInSeconds
     return fraction
 }
-YTActivateYouTube(browserObject := YTlibrary_Chrome) {
+YTActivateYouTube(browserObject := DefaultYTBrowserFirefox) {
 
-    WinActivate(YTLibrary_chromeMatchString)
+    ;WinActivate(YTLibrary_chromeMatchString)
     sleep 500
     try {
         currentURL := browserObject.GetCurrentURL()
@@ -93,7 +100,7 @@ YTActivateYouTube(browserObject := YTlibrary_Chrome) {
 
 }
 
-YTSeek(browser := YTlibrary_Chrome, direction := "forward") {
+YTSeek(browser := DefaultYTBrowserFirefox, direction := "forward") {
     YTActivateYouTube(browser)
     try {
         playBUtton := browser.ElementExist({ ClassName: "ytp-play-button ytp-button" })
@@ -111,7 +118,7 @@ YTSeek(browser := YTlibrary_Chrome, direction := "forward") {
     }
 }
 
-YTGoTo(browser := YTlibrary_Chrome, n := 0) { ;Goes back to beginning by default
+YTGoTo(browser := DefaultYTBrowserFirefox, n := 0) { ;Goes back to beginning by default
     YTActivateYouTube(browser)
     try {
         playBUtton := browser.ElementExist({ ClassName: "ytp-play-button ytp-button" })
@@ -126,7 +133,7 @@ YTGoTo(browser := YTlibrary_Chrome, n := 0) { ;Goes back to beginning by default
     }
 }
 
-YTChangeVolume(fixedSetting := 200, browser := YTlibrary_Chrome, increment := 10.0) {
+YTChangeVolume(fixedSetting := 200, browser := DefaultYTBrowserFirefox, increment := 10.0) {
 
     try {
         YTActivateYouTube(browser)
@@ -168,7 +175,7 @@ YTChangeVolume(fixedSetting := 200, browser := YTlibrary_Chrome, increment := 10
 
 }
 
-YTPlayPause(browser := YTlibrary_Chrome) {
+YTPlayPause(browser := DefaultYTBrowserFirefox) {
 
     YTActivateYouTube(browser)
 
