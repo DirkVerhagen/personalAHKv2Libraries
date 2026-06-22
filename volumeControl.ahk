@@ -16,6 +16,12 @@ reportAllVolumes() {
 
 }
 
+IsMuted(application := "firefox.exe") {
+    command := A_ComSpec " /c " svv " /GetMute " application
+    muted := RunWait(command, , "Hide") ; /GetMute returns its status as an exit code, which is what RunWait returns
+    return muted
+}
+
 GetVolume(application := "brave.exe") {
     ; 1. Clear clipboard to ensure we catch the new value
     A_Clipboard := ""
@@ -35,6 +41,17 @@ GetVolume(application := "brave.exe") {
         FlyOut("Failed to get volume for " application)
         return -1
     }
+}
+
+/**
+ * Toggles the mute status for an application
+ * @param {String} application the string to the application executable, e.g. "firefox.exe"
+ * @returns {Integer} Mute status, 1 if muted, otherwise 0
+ */
+toggleMute(application := "firefox.exe") {
+    command := A_ComSpec " /c " svv " /Switch " application
+    RunWait(command, , "Hide")
+    return IsMuted(application)
 }
 
 cycleSoundOptions(shift := 1) {
