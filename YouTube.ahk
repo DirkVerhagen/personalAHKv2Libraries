@@ -51,8 +51,13 @@ YTgetTotalSeconds(browser := DefaultYTBrowserFirefox) {
         flyOut("FindElement returned an integer", errorDuration, , 2)
         return -1
     }
-    totalSeconds := sliderEl.RangeValuePattern.Maximum
-    return totalSeconds * 1
+    try {
+        totalSeconds := Number(sliderEl.RangeValuePattern.Maximum)
+    }
+    catch {
+        flyOut("Could not determine total time", errorDuration, , 2)
+    }
+    return Floor(totalSeconds)
 }
 
 

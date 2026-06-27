@@ -72,10 +72,13 @@ infoPanel(content := "content", side := "left", isVisible := true, keyToToggle :
 
 
 }
-
-flyOut(text := "This is a flyout", duration := 1000, position := "center", screen := 1, sidebar := false, value := 100) {
+errorFlyOut(text := "This is an error") {
+    flyOut(text, flyOutduration_ErrorMessage, "bottom", 1, false, 100, true)
+}
+flyOut(text := "This is a flyout", duration := 1000, position := "center", screen := 1, sidebar := false, value := 100, isError := false) {
     ; Create GUI
     positionLowerCase := StrLower(position)
+    flyOutWidth := 200 ; default value
     FlyOut1 := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner")
     FlyOut1.BackColor := "333333"
     FlyOut1.SetFont("cWhite s14", "Segoe UI")
@@ -83,7 +86,8 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
     FlyOut1.Show("Hide")
     FlyOut1.GetClientPos(, , &flyOutWidth,)
     FlyOut1.MarginY := 0
-    progressBar := FlyOut1.add("Text", "Section x0 w" flyOutWidth " h5 Backgrounddab327")
+    progressBarColor := isError ? "990000" : "dab327"
+    progressBar := FlyOut1.add("Text", "Section x0 w" flyOutWidth " h5 Background" progressBarColor)
     progressBar.progress := 100
     WinSetTransparent(200, FlyOut1)
     monitorTwoX := 400 ; ensure it's always set
@@ -97,8 +101,14 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
         WinSetTransparent(200, FlyOut2)
     }
     else {
-        if (!sideBar)
-            monitorTwoX := A_ScreenWidth + (MonitorTwoLengthHeight[1] / 2)  ; change this to be  the screenwidth plus the second screen width
+        if (!sideBar) {
+            try {
+                monitorTwoX := A_ScreenWidth + (MonitorTwoLengthHeight[1] / 2)  ; change this to be  the screenwidth plus the second screen width
+            }
+            catch {
+                monitorTwoX := A_ScreenWidth + 500
+            }
+        }
         else
             MonitorTwoX := A_ScreenWidth + 30
     }
@@ -161,7 +171,13 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
         posX := 100
         posY := 100
     }
-    posX := posX - (flyOutWidth / 2)
+    try { ; Sometimes a window gets destroyed before we can get the width
+        posX := posX - (flyOutWidth / 2)
+    }
+    catch {
+        return ; Don't show flyout
+    }
+
     if (screen == 0) {
         Screen1posX := Screen1posX - (flyOutWidth / 2)
         Screen2posX := Screen2posX - (flyOutWidth / 2)

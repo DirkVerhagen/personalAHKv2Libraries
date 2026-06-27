@@ -34,17 +34,16 @@ screenMiddleMove() {
     MouseMove(A_ScreenWidth / 2, A_ScreenHeight / 2)
     CoordMode("Mouse", currentCoordMode)
 }
-keepWiggling() {
-    flyout("Everyday I'm wigglin", , "bottom")
+keepWiggling(n := 1) {
     sleep 100 ;allow time for A_TimeIdlePhysical to accumulate)
     while (A_TimeIdlePhysical > 50) {
-        mouseWiggle()
+        mouseWiggle(n)
         sleep 500 ; wiggle 2 times a second
     }
 }
-mouseWiggle() {
-    MouseMove(-2, -2, 1, "R")
-    MouseMove(2, 2, 1, "R")
+mouseWiggle(n := 1) {
+    MouseMove(-2 * n, -2 * n, 1, "R")
+    MouseMove(2 * n, 2 * n, 1, "R")
 }
 MouseLeft(n := 50, speed := 2) {
     MouseMove(-n, 0, speed, "R")
