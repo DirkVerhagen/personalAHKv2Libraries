@@ -8,7 +8,7 @@
 ;Time in ms to wait for a second tap before executing the function for the first tap
 global cumulativeTapTimeOut := 500 ;Time in ms to wait for additional taps before executing the function for the first tap
 global DoubleTapTimeOut := 300
-HandleTap(keyID, actionFunc, optionTexts := ["", "", "T3", "4", "5", "6?!", "Really? 7 Taps?!?"], tapTime := DoubleTapTimeOut) {
+HandleTap(keyID, actionFunc, optionTexts := ["", "", "", "4", "5", "6?!", "Really? 7 Taps?!?"], tapTime := DoubleTapTimeOut) {
     static taps := Map() ;number of taps for this particular key
     static timers := Map() ;Timer callbacks for this particular key
 

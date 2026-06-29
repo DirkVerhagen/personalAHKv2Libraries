@@ -8,6 +8,9 @@ global whatsAppMatchString := "WhatsApp ahk_exe brave.exe"
 global liveCaptionsMatchString := "ahk_exe LiveCaptions.exe"
 global braveMatchString := "ahk_exe Brave.exe"
 global streamKeys := "_stream_keys.ahk ahk_class AutoHotkeyGUI"
+global codeMatchString := "Visual Studio Code"
+global youTubeMatchString := "YouTube ahk_exe brave.exe"
+
 
 GroupAdd "firefoxWindows", ffLibraryMatchString
 GroupAdd "firefoxWindows", ffBrowserMatchString

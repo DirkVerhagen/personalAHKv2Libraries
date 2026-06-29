@@ -57,6 +57,11 @@ MouseUp(n := 50, speed := 2) {
 MouseDown(n := 50, speed := 2) {
     MouseMove(0, n, speed, "R")
 }
+mouseDoubleClick() {
+    Click()
+    sleep 50
+    Click()
+}
 isMouseNear(x, y, mode := A_CoordModeMouse) {
     currentCoordMode := A_CoordModeMouse
     CoordMode("Mouse", mode)

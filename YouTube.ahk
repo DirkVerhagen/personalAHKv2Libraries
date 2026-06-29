@@ -4,14 +4,14 @@
 #include ..\..\lib\personalVariables.ahk
 #Include ..\..\lib\UIA.ahk
 #Include ..\..\lib\UIA_Browser.ahk
-if (!WinExist(ffBrowserMatchString)) {
-    Run(fireFoxExecutable)
-    if (!WinWait(ffBrowserMatchString, , 5000)) {
-        MsgBox "Firefox did not start in time, exiting script"
-        ExitApp()
-    }
-}
-global DefaultYTBrowserFirefox := UIA_Browser(ffBrowserMatchString)
+if WinExist(youTubeMatchString)
+    global DefaultYTBrowserFirefox := UIA_Browser(youTubeMatchString)
+else if WinExist(braveMatchString)
+    global DefaultYTBrowserFirefox := UIA_Browser(braveMatchString)
+else if WinExist(ffBrowserMatchString)
+    global DefaultYTBrowserFirefox := UIA_Browser(ffBrowserMatchString)
+else
+    global DefaultYTBrowserFirefox := ""
 global errorDuration := 2000
 
 
