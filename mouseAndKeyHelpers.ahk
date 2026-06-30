@@ -22,17 +22,11 @@ keyTimes(key, n) {
     }
 }
 screenMiddleClick() {
-    currentCoordMode := A_CoordModeMouse
-    CoordMode("Mouse", "Screen")
     MouseMove(A_ScreenWidth / 2, A_ScreenHeight / 2, 1)
     Click()
-    CoordMode("Mouse", currentCoordMode)
 }
 screenMiddleMove() {
-    currentCoordMode := A_CoordModeMouse
-    CoordMode("Mouse", "Screen")
     MouseMove(A_ScreenWidth / 2, A_ScreenHeight / 2)
-    CoordMode("Mouse", currentCoordMode)
 }
 keepWiggling(n := 1) {
     sleep 100 ;allow time for A_TimeIdlePhysical to accumulate)
