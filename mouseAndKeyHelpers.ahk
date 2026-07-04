@@ -21,23 +21,56 @@ keyTimes(key, n) {
         sleep 30
     }
 }
-screenMiddleClick() {
-    MouseMove(A_ScreenWidth / 2, A_ScreenHeight / 2, 1)
+screenMiddleClick(offsetX := 0, offsetY := 0) {
+    MouseGetPos(&mx, &my)
+    MouseMove((A_ScreenWidth / 2) + offsetX, (A_ScreenHeight / 2) + offsetY, 0)
     Click()
+    mouseWiggle()
+    MouseMove(mx, my, 0)
 }
-screenMiddleMove() {
-    MouseMove(A_ScreenWidth / 2, A_ScreenHeight / 2)
+screenMiddleMove(offsetX := 0, offsetY := 0) {
+    MouseMove((A_ScreenWidth / 2) + offsetX, (A_ScreenHeight / 2) + offsetY, 0)
+    mouseWiggle()
+}
+backToOriginalPosition(fun) {
+    MouseGetPos(&mx, &my)
+    fun()
+    MouseMove(mx, my, 0)
 }
 keepWiggling(n := 1) {
+    ; TODO: Currently blocks any function that calls this directly
     sleep 100 ;allow time for A_TimeIdlePhysical to accumulate)
-    while (A_TimeIdlePhysical > 50) {
+    global toWiggle
+    while (A_TimeIdlePhysical > 50 and toWiggle) {
         mouseWiggle(n)
-        sleep 500 ; wiggle 2 times a second
+        Sleep(-1) ; flush buffers
+        Sleep(500)
     }
 }
-mouseWiggle(n := 1) {
-    MouseMove(-2 * n, -2 * n, 1, "R")
-    MouseMove(2 * n, 2 * n, 1, "R")
+global toWiggle := A_TrayMenu
+stopWiggle() {
+    global toWiggle
+    toWiggle := false
+}
+
+startWiggle() {
+    global toWiggle
+    toWiggle := true
+}
+mouseWiggle(times := 1, pixels := 1) {
+    global toWiggle
+    ; don't wiggle if someone is using their mouse
+    if (A_TimeIdleMouse < 100) {
+        return
+
+    }
+    if (!toWiggle)
+        return
+    loop times {
+        MouseMove(-2 * pixels, -2 * pixels, 10, "R")
+        MouseMove(2 * pixels, 2 * pixels, 10, "R")
+    }
+
 }
 MouseLeft(n := 50, speed := 2) {
     MouseMove(-n, 0, speed, "R")

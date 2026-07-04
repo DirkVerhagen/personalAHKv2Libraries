@@ -57,7 +57,7 @@ convertShortStringToSeconds(str) {
     return seconds
 }
 
-convertLongTimeStringToSeconds(str) {
+convertLongTimeStringToTotalSeconds(str) {
     totalSec := 0
 
     ; We look at the part after " of " to get the total duration
@@ -80,9 +80,33 @@ convertLongTimeStringToSeconds(str) {
         return 0
     }
 
-    return totalSec
+    return Number(totalSec)
 }
+convertLongTimeStringToPlayedSeconds(str) {
+    playedSeconds := 0
 
+    ; Look at the part BEFORE " of " to get the current elapsed time
+    if RegExMatch(str, "(.*) of", &match) {
+        currentPart := match[1]
+
+        ; Extract Hours (x)
+        if RegExMatch(currentPart, "(\d+) hour", &h)
+            playedSeconds += h[1] * 3600
+
+        ; Extract Minutes (y)
+        if RegExMatch(currentPart, "(\d+) minute", &m)
+            playedSeconds += m[1] * 60
+
+        ; Extract Seconds (z)
+        if RegExMatch(currentPart, "(\d+) second", &s)
+            playedSeconds += s[1]
+    }
+    else {
+        return 0
+    }
+
+    return Number(playedSeconds)
+}
 #SuspendExempt true
 BoolToStr(val) => val ? "true" : "false"
 BoolToEnDisStr(val) => val ? "Enabled" : "Disabled"
@@ -127,7 +151,7 @@ arrayIndexToCarousselString(index, items) {
     leftItem := items[leftItemIndex]
     rightItem := items[rightItemIndex]
 
-    carousselString := leftItem . " [" . StrUpper(mainItem) . "] " . rightItem
+    carousselString := SubStr(leftItem, 1, 3) . "< [" . StrUpper(mainItem) . "] >" . SubStr(rightItem, 1, 3)
     return carousselString
 }
 

@@ -48,7 +48,20 @@ GetVolume(application := "brave.exe") {
  * @param {String} application the string to the application executable, e.g. "firefox.exe"
  * @returns {Integer} Mute status, 1 if muted, otherwise 0
  */
-toggleMute(application := "firefox.exe") {
+toggleMute(application := "firefox.exe", toggle := "toggle") {
+
+    switch toggle {
+        case "toggle":
+            command := A_ComSpec " /c " svv " /Switch " application
+        case "on":
+            command := A_ComSpec " /c " svv " /Mute " application
+        case "off":
+            command := A_ComSpec " /c " svv " /Unmute " application
+        default:
+            command := A_ComSpec " /c " svv " /Switch " application
+    }
+
+
     command := A_ComSpec " /c " svv " /Switch " application
     RunWait(command, , "Hide")
     return IsMuted(application)

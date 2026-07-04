@@ -73,21 +73,24 @@ infoPanel(content := "content", side := "left", isVisible := true, keyToToggle :
 
 }
 errorFlyOut(text := "This is an error") {
-    flyOut(text, flyOutduration_ErrorMessage, "bottom", 1, false, 100, true)
+    flyOut(text, flyOutduration_ErrorMessage, "bottom", 1, 100, "990000")
 }
-flyOut(text := "This is a flyout", duration := 1000, position := "center", screen := 1, sidebar := false, value := 100, isError := false) {
+flyOut(text := "This is a flyout", duration := 1000, position := "center", screen := 1, value := 100, color := "dab327") {
     ; Create GUI
     positionLowerCase := StrLower(position)
-    flyOutWidth := 200 ; default value
+    flyOut1Width := 200 ; default value
     FlyOut1 := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner")
     FlyOut1.BackColor := "333333"
-    FlyOut1.SetFont("cWhite s14", "Segoe UI")
+    if (position != "center")
+        FlyOut1.SetFont("cWhite s14", "Segoe UI")
+    else
+        FlyOut1.SetFont("cWhite s16", "Segoe UI")
     FlyOut1.Add("Text", "Section", "`n" text "`n")
     FlyOut1.Show("Hide")
-    FlyOut1.GetClientPos(, , &flyOutWidth,)
+    FlyOut1.GetClientPos(, , &flyOut1Width, &flyOut1Height)
     FlyOut1.MarginY := 0
-    progressBarColor := isError ? "990000" : "dab327"
-    progressBar := FlyOut1.add("Text", "Section x0 w" flyOutWidth " h5 Background" progressBarColor)
+    progressBarColor := color
+    progressBar := FlyOut1.add("Text", "Section x0 w" flyOut1Width " h5 Background" progressBarColor)
     progressBar.progress := 100
     WinSetTransparent(200, FlyOut1)
     monitorTwoX := 400 ; ensure it's always set
@@ -100,26 +103,12 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
 
         WinSetTransparent(200, FlyOut2)
     }
-    else {
-        if (!sideBar) {
-            try {
-                monitorTwoX := A_ScreenWidth + (MonitorTwoLengthHeight[1] / 2)  ; change this to be  the screenwidth plus the second screen width
-            }
-            catch {
-                monitorTwoX := A_ScreenWidth + 500
-            }
-        }
-        else
-            MonitorTwoX := A_ScreenWidth + 30
-    }
 
     ; determine coordinates for first screen
-    if (sideBar) {
-        monitorOneX := 30
-    }
-    else {
-        monitorOneX := (A_ScreenWidth / 2)
-    }
+
+    monitorOneX := (A_ScreenWidth / 2) - (flyOut1Width / 2)
+    monitorTwoX := (A_ScreenWidth) + (MonitorTwoLengthHeight[1] / 2) - (flyOut1Width / 2)
+
 
     ;The Y position we can get from the bottom and top coords rather than in this complicated manner
     ;MonitorTwoY := MonitorTwoLTRBCoords[2] + (MonitorTwoLengthHeight[2]/2)
@@ -142,7 +131,7 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
         switch screen {
             case 1:
                 posX := monitorOneX
-                posY := A_ScreenHeight / 2
+                posY := (A_ScreenHeight / 2)
             case 2:
                 posX := monitorTwoX
                 posY := MonitorTwoLTRBCoords[2] + (MonitorTwoLengthHeight[2] / 2)
@@ -156,42 +145,42 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
         switch screen {
             case 1:
                 posX := monitorOneX
-                posY := A_ScreenHeight - 100
+                posY := A_ScreenHeight - 150
             case 2:
                 posX := monitorTwoX
                 posY := MonitorTwoLTRBCoords[4] - 100
             case 0:
                 Screen1posX := monitorOneX
-                Screen1posY := A_ScreenHeight - 100
+                Screen1posY := A_ScreenHeight - 150
                 Screen2posX := monitorTwoX
                 Screen2posY := MonitorTwoLTRBCoords[4] - 100
         }
     else {
-        MsgBox "invalid position received for notification, using 100,100"
+        ; MsgBox "invalid position received for notification, using 100,100"
         posX := 100
         posY := 100
     }
     try { ; Sometimes a window gets destroyed before we can get the width
-        posX := posX - (flyOutWidth / 2)
+        posX := posX - (flyOut1Width / 2)
     }
     catch {
         return ; Don't show flyout
     }
 
     if (screen == 0) {
-        Screen1posX := Screen1posX - (flyOutWidth / 2)
-        Screen2posX := Screen2posX - (flyOutWidth / 2)
+        Screen1posX := Screen1posX - (flyOut1Width / 2)
+        Screen2posX := Screen2posX - (flyOut1Width / 2)
     }
     ; Show the GUI, but do not activate it / set focus
     switch screen {
         case 1:
             FlyOut1.Show("x" posX " y" posY " NoActivate")
-            FlyOut1.GetClientPos(, , &flyOutWidth)
-            progressBar.Move(, , flyOutWidth)
+            FlyOut1.GetClientPos(, , &flyOut1Width)
+            progressBar.Move(, , flyOut1Width)
         case 2:
             FlyOut1.Show("x" posX " y" posY " NoActivate")
-            FlyOut1.GetClientPos(, , &flyOutWidth)
-            progressBar.Move(, , flyOutWidth)
+            FlyOut1.GetClientPos(, , &flyOut1Width)
+            progressBar.Move(, , flyOut1Width)
 
         case 0:
             FlyOut1.Show("x" Screen1posX " y" Screen1posY " NoActivate")
