@@ -12,27 +12,26 @@ else if WinExist(ffBrowserMatchString)
     global DefaultYTBrowserFirefox := UIA_Browser(ffBrowserMatchString)
 else
     global DefaultYTBrowserFirefox := ""
-global errorDuration := 2000
 
 
 YTgetRunTime(browser := DefaultYTBrowserFirefox) {
     try {
-        sliderEl := browser.FindElement({ ClassName: "ytp-progress-bar" })
+        sliderEl := browser.WaitElement({ ClassName: "ytp-progress-bar" }, 200)
 
     }
     catch error as e {  ;probably called with a photo iso movie
         ;flyOut("Could not get YT Fraction")
         return -1
     }
-    if (IsInteger(sliderEl)) {
-        flyOut("FindElement returned an integer", errorDuration, , 2)
+    if (!sliderEl) {
+        ; errorFlyOut(A_ThisFunc ": No Progress bar found")
         return -1
     }
     try {
         runTime := sliderEl.RangeValuePattern.Value ;this gives the seconds value of the slider
     }
     catch {
-        flyOut "rangeValuePattern did not return runtime", 2000, "bottom"
+        errorFlyOut(A_ThisFunc ": No rangevaluepattern value")
         return -1
     }
     return Number(runTime)
@@ -40,22 +39,22 @@ YTgetRunTime(browser := DefaultYTBrowserFirefox) {
 
 YTgetTotalSeconds(browser := DefaultYTBrowserFirefox) {
     try {
-        sliderEl := browser.WaitElement({ ClassName: "ytp-progress-bar" }, 3000)
+        sliderEl := browser.WaitElement({ ClassName: "ytp-progress-bar" }, 200)
 
     }
     catch error as e {
-        flyOut("Not able to get total seconds", errorDuration, , 2)
+        ;flyOut("Not able to get total seconds", errorDuration, , 2)
         return -1
     }
-    if (IsInteger(sliderEl)) {
-        flyOut("FindElement returned an integer", errorDuration, , 2)
+    if (!sliderEl) {
+        ; errorFlyOut(A_ThisFunc ": No Progress bar found")
         return -1
     }
     try {
         totalSeconds := Number(sliderEl.RangeValuePattern.Maximum)
     }
     catch {
-        flyOut("Could not determine total time", errorDuration, , 2)
+        errorFlyOut(A_ThisFunc ": No rangevaluepattern max")
     }
     return Floor(totalSeconds)
 }
@@ -87,7 +86,7 @@ YTActivateYouTube(browserObject := DefaultYTBrowserFirefox) {
         currentURL := browserObject.GetCurrentURL()
     }
     catch {
-        flyOut("error fetching url", errorDuration, , 2)
+        flyOut("error fetching url", flyOutduration_ErrorMessage, , 2)
         return
     }
     if (!InStr(currentURL, "youtube")) { ;if the current tab is youtube then youtube incorrectly has tab elements in its page breaking selectTab
@@ -119,7 +118,7 @@ YTSeek(browser := DefaultYTBrowserFirefox, direction := "forward") {
 
     }
     catch error as e {
-        flyOut("Method YTSeek failed: " . e.Message, errorDuration, , 2)
+        flyOut("Method YTSeek failed: " . e.Message, flyOutduration_ErrorMessage, , 2)
     }
 }
 
@@ -165,16 +164,16 @@ YTChangeVolume(fixedSetting := 200, browser := DefaultYTBrowserFirefox, incremen
                     flyOut("Youtube Volume: " . Integer(newVolume), 1000, "bottom", 1)
                 }
                 catch error as e {
-                    flyOut("Could not execute volume script :" e.Message, errorDuration, , 2)
+                    flyOut("Could not execute volume script :" e.Message, flyOutduration_ErrorMessage, , 2)
                 }
             }
         }
         catch error as e {
-            flyOut("Could not find volume panel :" e.Message, errorDuration, , 2)
+            flyOut("Could not find volume panel :" e.Message, flyOutduration_ErrorMessage, , 2)
         }
     }
     catch error as e {
-        flyOut("Could not active youtube during volume change :" e.Message, errorDuration, , 2)
+        flyOut("Could not active youtube during volume change :" e.Message, flyOutduration_ErrorMessage, , 2)
     }
 
 
@@ -197,7 +196,7 @@ YTPlayPause(browser := DefaultYTBrowserFirefox) {
 
     }
     catch error as e {
-        flyOut("Could not play/pause YT :" e.Message, errorDuration, , 2)
+        flyOut("Could not play/pause YT :" e.Message, flyOutduration_ErrorMessage, , 2)
         return 0
     }
 }
