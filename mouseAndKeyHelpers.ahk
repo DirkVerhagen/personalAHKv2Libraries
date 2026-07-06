@@ -32,7 +32,7 @@ screenMiddleMove(offsetX := 0, offsetY := 0) {
     MouseMove((A_ScreenWidth / 2) + offsetX, (A_ScreenHeight / 2) + offsetY, 0)
     mouseWiggle()
 }
-backToOriginalPosition(fun) {
+mouseReturnPosition(fun) {
     MouseGetPos(&mx, &my)
     fun()
     MouseMove(mx, my, 0)
@@ -67,8 +67,8 @@ mouseWiggle(times := 1, pixels := 1) {
     if (!toWiggle)
         return
     loop times {
-        MouseMove(-2 * pixels, -2 * pixels, 10, "R")
-        MouseMove(2 * pixels, 2 * pixels, 10, "R")
+        MouseMove(-1 * pixels, -1 * pixels, 5, "R")
+        MouseMove(1 * pixels, 1 * pixels, 5, "R")
     }
 
 }
