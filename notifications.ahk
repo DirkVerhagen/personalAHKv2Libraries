@@ -5,7 +5,7 @@ global MonitorOneLengthHeight := [0, 0]
 global MonitorTwoLengthHeight := [0, 0]
 global flyOutduration_ErrorMessage := 3000
 global flyOutduration_KeyWorkedMessage := 500
-global flyOutduration_Warning := 2000
+global flyOutduration_Warning := 5000
 global flyOutduration_StatusUpdate := 1000
 global flyOutDuration_Informational := 3000
 loop MonitorGetCount() {
@@ -131,13 +131,13 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
         switch screen {
             case 1:
                 posX := monitorOneX
-                posY := (A_ScreenHeight / 2)
+                posY := (A_ScreenHeight / 2) + 20 ;+20 so we dont block middle clicks
             case 2:
                 posX := monitorTwoX
                 posY := MonitorTwoLTRBCoords[2] + (MonitorTwoLengthHeight[2] / 2)
             case 0:
                 Screen1posX := monitorOneX
-                Screen1posY := A_ScreenHeight / 2
+                Screen1posY := (A_ScreenHeight / 2) + 20
                 Screen2posX := monitorTwoX
                 Screen2posY := MonitorTwoLTRBCoords[2] + (MonitorTwoLengthHeight[2] / 2)
         }
