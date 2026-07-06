@@ -1,32 +1,31 @@
 #include ./notifications.ahk
+#Requires AutoHotkey v2.0
 
-
-State := Observable()
-
-State.OnChange := (propName, oldVal, newVal) => (
-    flyOut("Property '" propName "' changed from : " oldVal " to: " newVal, flyOutDuration_Informational, "top")
-    ; TODO Add custom handlers based on propName
-)
-
-
-; --- The Magic Class ---
 class Observable {
-    __Data := Map()
     OnChange := ""
 
-    ; __Set intercepts ALL new variable assignments automatically
-    __Set(Name, Params, Value) {
-        oldValue := this.__Data.Has(Name) ? this.__Data[Name] : ""
-        this.__Data[Name] := Value
+    __New() {
+        this.DefineProp("__storage", { Value: Map() })
+    }
 
-        ; Call the change handler if it exists and the value actually changed
+    __Set(Name, Params, Value) {
+        if (Name == "OnChange") {
+            this.DefineProp("OnChange", { Value: Value })
+            return
+        }
+
+        oldValue := this.__storage.Has(Name) ? this.__storage[Name] : ""
+        this.__storage[Name] := Value
+
         if (this.OnChange && oldValue !== Value) {
-            this.OnChange.(Name, oldValue, Value)
+            ; FIX FOR IMAGE_C2AF9E.PNG: Extract the function first!
+            ; This prevents AHK from injecting "this" as an implicit 4th parameter.
+            handler := this.OnChange
+            handler(Name, oldValue, Value)
         }
     }
 
-    ; __Get handles reading the variables
     __Get(Name, Params) {
-        return this.__Data.Has(Name) ? this.__Data[Name] : ""
+        return this.__storage.Has(Name) ? this.__storage[Name] : ""
     }
 }
