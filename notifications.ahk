@@ -8,6 +8,7 @@ global flyOutduration_KeyWorkedMessage := 500
 global flyOutduration_Warning := 5000
 global flyOutduration_StatusUpdate := 1000
 global flyOutDuration_Informational := 3000
+global volumeFlyOutCcolor := "00AA00"
 loop MonitorGetCount() {
     MonitorGet(A_Index, &Left, &Top, &Right, &Bottom)
     if (A_Index == 2) { ; What we refer to as mon 1 is actually monitor 2 in AHK (and windows)
@@ -107,7 +108,7 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
     ; determine coordinates for first screen
 
     monitorOneX := (A_ScreenWidth / 2) - (flyOut1Width / 2)
-    monitorTwoX := (A_ScreenWidth) + (MonitorTwoLengthHeight[1] / 2) - (flyOut1Width / 2)
+    monitorTwoX := ((A_ScreenWidth) + (MonitorTwoLengthHeight[1] / 2)) - (flyOut1Width / 2)
 
 
     ;The Y position we can get from the bottom and top coords rather than in this complicated manner
@@ -117,15 +118,15 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
         switch screen {
             case 1:
                 posX := monitorOneX
-                posY := 100
+                posY := 50
             case 2:
                 posX := monitorTwoX
-                posY := MonitorTwoLTRBCoords[1] + 100
+                posY := MonitorTwoLTRBCoords[1] + 50
             case 0:
                 Screen1posX := monitorOneX
-                Screen1posY := 100
+                Screen1posY := 50
                 Screen2posX := monitorTwoX
-                Screen2posY := MonitorTwoLTRBCoords[1] + 100
+                Screen2posY := MonitorTwoLTRBCoords[1] + 50
         }
     else if (positionLowerCase == "center")
         switch screen {
@@ -151,7 +152,7 @@ flyOut(text := "This is a flyout", duration := 1000, position := "center", scree
                 posY := MonitorTwoLTRBCoords[4] - 100
             case 0:
                 Screen1posX := monitorOneX
-                Screen1posY := A_ScreenHeight - 150
+                Screen1posY := A_ScreenHeight - 100
                 Screen2posX := monitorTwoX
                 Screen2posY := MonitorTwoLTRBCoords[4] - 100
         }
