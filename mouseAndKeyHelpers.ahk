@@ -24,7 +24,8 @@ keyTimes(key, n) {
 screenMiddleClick(offsetX := 0, offsetY := 0) {
     MouseGetPos(&mx, &my)
     MouseMove((A_ScreenWidth / 2) + offsetX, (A_ScreenHeight / 2) + offsetY, 0)
-    Click()
+
+    Send("{Click}")
     mouseWiggle()
     MouseMove(mx, my, 0)
 }
