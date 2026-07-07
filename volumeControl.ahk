@@ -2,9 +2,10 @@
 #include notifications.ahk
 
 global svv := "C:\svol\svcl.exe"
-global soundOptions := ["Realtek", "Brave.exe", "Firefox.exe"]
+global soundOptions := ["Realtek", "Brave.exe", "Firefox.exe", "DefaultRenderDevice"]
 global soundOptionIndex := 2
 
+RunWait(svv ' /AutoRefresh 1 /ShowUnpluggedDevices 1')
 reportAllVolumes() {
     global soundOptions
     reportString := ""
@@ -73,25 +74,43 @@ cycleSoundOptions(shift := 1) {
     newIndex := cycleArrayIndex(soundOptions, soundOptionIndex, shift)
     newItem := soundOptions[newIndex]
     soundOptionIndex := newIndex
-    flyOut("Volume being set for: " newitem, 2500)
+    flyOut("Volume being set for: " newitem, flyOutDuration_Informational, "center", 1, , volumeFlyOutCcolor)
 }
 
 changeDeviceVolumeWith(n) {
     global soundOptionIndex
     global soundOptions
+    global svv
     deviceToUpdate := soundOptions[soundOptionIndex]
     if (deviceToUpdate == "YouTube") {
-        if HasMethod(YTChangeVolume()) {
+        if IsSet(YTChangeVolume) {
             YTChangeVolume(, , n)
         }
     }
     else {
         command := svv ' /ChangeVolume ' deviceToUpdate ' ' n ''
-        Run(command, , "Hide")
-        sleep 100
+        RuNWait(command, , "Hide")
         newVolume := GetVolume(deviceToUpdate)
     }
-    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", , , newVolume)
+    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", 1, newVolume, volumeFlyOutCcolor)
+}
+setVolumeTo(n) {
+    global soundOptionIndex
+    global soundOptions
+    global svv
+    deviceToUpdate := soundOptions[soundOptionIndex]
+    if (deviceToUpdate == "YouTube") {
+        if IsSet(YTChangeVolume) {
+            YTChangeVolume(n, ,)
+        }
+    }
+    else {
+        command := svv ' /SetVolume ' deviceToUpdate ' ' n ''
+        RuNWait(command, , "Hide")
+        newVolume := GetVolume(deviceToUpdate)
+    }
+    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", 1, newVolume, volumeFlyOutCcolor)
+
 }
 
 AppVol(Target := "A", Level := 0) {
