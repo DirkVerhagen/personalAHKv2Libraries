@@ -7,6 +7,34 @@
 
 /**
  * 
+ * @param strArray An array of strings
+ * @param {String} delimiter The symbol used to separate them in the result string
+ * @returns {String} The array returned as a string formatted as val1 delimiter val2 delimiter etc.
+ */
+JoinStrings(strArray, delimiter := ", ") {
+    result := ""
+    for index, value in strArray {
+        result .= (index == 1 ? "" : delimiter) . value
+    }
+    return result
+}
+
+/**
+ * 
+ * @param time1 Time 1 formatted as HH:MM:SS
+ * @param time2 Time 2 formatted as HH:MM:SS (or without hours/minutes)
+ * @returns {Float | Integer} Difference between the two times in seconds (can use secondsToTimeString to convert)
+ */
+ShortTimeStringsDifference(time1, time2) {
+    time1Seconds := convertShortStringToSeconds(time1)
+    time2Seconds := convertShortStringToSeconds(time2)
+    diff := Abs(time2Seconds - time1Seconds)
+    return diff
+}
+
+
+/**
+ * 
  * @param seconds total number of seconds
  * @returns {String} Outputs a string formatted as hh:mm:ss (or mm:ss or ss)
  */
@@ -53,10 +81,15 @@ convertShortStringToSeconds(str) {
     else { ;not able to split the string
         return -1
     }
-
-    return seconds
+    if (IsNumber(seconds))
+        return seconds
+    else return -1
 }
-
+/**
+ * Converts a string in the form of x hours, y minutes, z seconds of a hours, b minutes and c seconds to the second value for a:b:c
+ * @param str The entire long timestring
+ * @returns {Integer | Float} Total time in seconds
+ */
 convertLongTimeStringToTotalSeconds(str) {
     totalSec := 0
 
@@ -82,6 +115,12 @@ convertLongTimeStringToTotalSeconds(str) {
 
     return Number(totalSec)
 }
+
+/**
+ * * Converts a string in the form of x hours, y minutes, z seconds of a hours, b minutes and c seconds to the second value for x:y:z
+ * @param str The entire long timestring
+ * @returns {Integer | Float} Number of seconds that have elapsed
+ */
 convertLongTimeStringToPlayedSeconds(str) {
     playedSeconds := 0
 

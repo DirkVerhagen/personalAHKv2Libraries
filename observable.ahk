@@ -3,6 +3,7 @@
 
 class Observable {
     OnChange := ""
+    OnUpdate := ""
 
     __New() {
         this.DefineProp("__storage", { Value: Map() })
@@ -11,6 +12,10 @@ class Observable {
     __Set(Name, Params, Value) {
         if (Name == "OnChange") {
             this.DefineProp("OnChange", { Value: Value })
+            return
+        }
+        if (Name == "OnUpdate") {
+            this.DefineProp("OnUpdate", { Value: Value })
             return
         }
 
@@ -22,7 +27,13 @@ class Observable {
             ; This prevents AHK from injecting "this" as an implicit 4th parameter.
             handler := this.OnChange
             handler(Name, oldValue, Value)
+        } if (this.OnUpdate && oldValue == Value) {
+            ; FIX FOR IMAGE_C2AF9E.PNG: Extract the function first!
+            ; This prevents AHK from injecting "this" as an implicit 4th parameter.
+            handler := this.OnUpdate
+            handler(Name, oldValue, Value)
         }
+
     }
 
     __Get(Name, Params) {

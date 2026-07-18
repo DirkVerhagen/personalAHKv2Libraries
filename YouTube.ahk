@@ -4,23 +4,16 @@
 #include ..\..\lib\personalVariables.ahk
 #Include ..\..\lib\UIA.ahk
 #Include ..\..\lib\UIA_Browser.ahk
-if WinExist(youTubeMatchString)
-    global DefaultYTBrowserFirefox := UIA_Browser(youTubeMatchString)
-else if WinExist(braveMatchString)
-    global DefaultYTBrowserFirefox := UIA_Browser(braveMatchString)
-else if WinExist(ffBrowserMatchString)
-    global DefaultYTBrowserFirefox := UIA_Browser(ffBrowserMatchString)
-else
-    global DefaultYTBrowserFirefox := ""
 
+global errorReporting := true
 
-YTgetRunTime(browser := DefaultYTBrowserFirefox) {
+YTgetRunTime(browser) {
     try {
         sliderEl := browser.WaitElement({ ClassName: "ytp-progress-bar" }, 200)
 
     }
     catch error as e {  ;probably called with a photo iso movie
-        ;flyOut("Could not get YT Fraction")
+        flyOut("Could not get YT Fraction")
         return -1
     }
     if (!sliderEl) {
@@ -37,17 +30,17 @@ YTgetRunTime(browser := DefaultYTBrowserFirefox) {
     return Number(runTime)
 }
 
-YTgetTotalSeconds(browser := DefaultYTBrowserFirefox) {
+YTgetTotalSeconds(browser) {
     try {
         sliderEl := browser.WaitElement({ ClassName: "ytp-progress-bar" }, 200)
 
     }
     catch error as e {
-        ;flyOut("Not able to get total seconds", errorDuration, , 2)
+        flyOut("Not able to get total seconds", flyOutduration_ErrorMessage, , 2)
         return -1
     }
     if (!sliderEl) {
-        ; errorFlyOut(A_ThisFunc ": No Progress bar found")
+        ; rrorFlyOut(A_ThisFunc ": No Progress bar found")
         return -1
     }
     try {
@@ -65,23 +58,24 @@ YTgetTotalSeconds(browser := DefaultYTBrowserFirefox) {
  * @param {UIA_Browser} browser  A UIA Browser object with the element ClassName ytp-progress-bar contained in it
  * @returns {Number | Integer} the number of seconds left for the first ytp-progress-bar found in that browser
  */
-YTgetSecondsLeft(browser := DefaultYTBrowserFirefox) {
+YTgetSecondsLeft(browser) {
     runtime := YTgetRunTime(browser)
     lengthInSeconds := YTgetTotalSeconds(browser)
     fraction := runtime / lengthInSeconds
     secondsLeft := lengthInSeconds - (fraction * lengthInSeconds)
     return secondsLeft
 }
-YTgetFraction(browser := DefaultYTBrowserFirefox) {
+YTgetFraction(browser) {
     runTime := YTgetRunTime(browser)
     lengthInSeconds := YTgetTotalSeconds(browser)
     fraction := runTime / lengthInSeconds
     return fraction
 }
-YTActivateYouTube(browserObject := DefaultYTBrowserFirefox) {
-
-    ;WinActivate(YTLibrary_chromeMatchString)
-    sleep 500
+YTActivateYouTube(browserObject) {
+    YTSetGlobalBrowser()
+    browserhwnd := browserObject.BrowserId
+    WinActivate("ahk_id" . browserhwnd)
+    WinWaitActive("ahk_id" . browserhwnd)
     try {
         currentURL := browserObject.GetCurrentURL()
     }
@@ -99,12 +93,17 @@ YTActivateYouTube(browserObject := DefaultYTBrowserFirefox) {
         }
     }
     else {
-        sleep 50 ;small sleep to give chance to read URL
     }
 
 }
+YTSetGlobalBrowser()
+{
+    global youTubeBrowser
+    if !IsSet(youTubeBrowser)
+        youTubeBrowser := UIA_Browser(youTubeBraveMatchString)
+}
 
-YTSeek(browser := DefaultYTBrowserFirefox, direction := "forward") {
+YTSeek(browser := youTubeBrowser, direction := "forward") {
     YTActivateYouTube(browser)
     try {
         playBUtton := browser.ElementExist({ ClassName: "ytp-play-button ytp-button" })
@@ -122,13 +121,13 @@ YTSeek(browser := DefaultYTBrowserFirefox, direction := "forward") {
     }
 }
 
-YTGoTo(browser := DefaultYTBrowserFirefox, n := 0) { ;Goes back to beginning by default
+YTGoTo(browser := youTubeBrowser, n := 0) { ;Goes back to beginning by default
     YTActivateYouTube(browser)
     try {
         playBUtton := browser.ElementExist({ ClassName: "ytp-play-button ytp-button" })
         if (playBUtton) {
             playBUtton.SetFocus()
-            Send("" . n)
+            Send(n)
         }
 
     }
@@ -137,7 +136,7 @@ YTGoTo(browser := DefaultYTBrowserFirefox, n := 0) { ;Goes back to beginning by 
     }
 }
 
-YTChangeVolume(fixedSetting := 200, browser := DefaultYTBrowserFirefox, increment := 10.0) {
+YTChangeVolume(browser := youTubeBrowser, fixedSetting := 200, increment := 10.0) {
 
     try {
         YTActivateYouTube(browser)
@@ -161,26 +160,25 @@ YTChangeVolume(fixedSetting := 200, browser := DefaultYTBrowserFirefox, incremen
                 }
                 try {
                     browser.JSExecute("document.querySelector('.html5-video-player').setVolume(" . Integer(newVolume) . ");")
-                    flyOut("Youtube Volume: " . Integer(newVolume), 1000, "bottom", 1)
+                    flyOut("Youtube Volume: " . Integer(newVolume), 1000, "bottom", 1, newVolume, volumeFlyOutCcolor)
                 }
                 catch error as e {
-                    flyOut("Could not execute volume script :" e.Message, flyOutduration_ErrorMessage, , 2)
+                    errorflyOut("Could not execute volume script :" e.Message)
                 }
             }
         }
         catch error as e {
-            flyOut("Could not find volume panel :" e.Message, flyOutduration_ErrorMessage, , 2)
+            errorFlyOut("Could not find volume panel :" e.Message)
         }
     }
     catch error as e {
-        flyOut("Could not active youtube during volume change :" e.Message, flyOutduration_ErrorMessage, , 2)
+        errorflyOut("Could not active youtube during volume change :" e.Message)
     }
 
 
 }
 
-YTPlayPause(browser := DefaultYTBrowserFirefox) {
-
+YTPlayPause(browser) {
     YTActivateYouTube(browser)
 
     try {

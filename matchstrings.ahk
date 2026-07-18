@@ -13,6 +13,7 @@ global youTubeBraveMatchString := "YouTube Brave " . braveMatchString
 global streamKeys := "_stream_keys.ahk ahk_class AutoHotkeyGUI"
 global codeMatchString := "Visual Studio Code"
 global youTubeMatchString := "YouTube ahk_exe brave.exe"
+global hueEssentialsMatchString := "ahk_exe Hue Essentials.exe"
 
 
 GroupAdd "firefoxWindows", ffLibraryMatchString

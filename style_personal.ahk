@@ -1,0 +1,5 @@
+global backgroundColor := "333333"
+global buttonColor := "444444"
+global fontStyle := "c999999 s12"
+global font := "Segoe UI"
+global contrastColor := "FF9F03"

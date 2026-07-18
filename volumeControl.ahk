@@ -1,19 +1,22 @@
 #include converters.ahk
 #include notifications.ahk
-
+#include YouTube.ahk
 global svv := "C:\svol\svcl.exe"
-global soundOptions := ["Realtek", "Brave.exe", "Firefox.exe", "DefaultRenderDevice"]
+global soundDevices := ["Realtek", "JBL", "WH-1000XM6"]
+global soundApplications := ["firefox.exe", "brave.exe"]
 global soundOptionIndex := 2
-
-RunWait(svv ' /AutoRefresh 1 /ShowUnpluggedDevices 1')
-reportAllVolumes() {
-    global soundOptions
+global youTubeBrowser
+reportAllVolumes(devices) {
     reportString := ""
-    for index, item in soundOptions {
-        reportString .= " " . getVolume(item) . " : " . item . "`n"
-
+    for index, item in devices {
+        try {
+            reportString .= " " . getVolume(item) . " : " . item . "`n"
+        }
+        catch {
+            reportString .= " No volume found : " . item . "`n"
+        }
     }
-    flyOut(reportString, 5000, "top", 1, false)
+    flyOut(reportString, 6000, "top", 0, false)
 
 }
 
@@ -69,22 +72,26 @@ toggleMute(application := "firefox.exe", toggle := "toggle") {
 }
 
 cycleSoundOptions(shift := 1) {
-    global soundOptions
+    global soundDevices
     global soundOptionIndex
-    newIndex := cycleArrayIndex(soundOptions, soundOptionIndex, shift)
-    newItem := soundOptions[newIndex]
+    newIndex := cycleArrayIndex(soundDevices, soundOptionIndex, shift)
+    newItem := soundDevices[newIndex]
     soundOptionIndex := newIndex
-    flyOut("Volume being set for: " newitem, flyOutDuration_Informational, "center", 1, , volumeFlyOutCcolor)
+    flyOut("Volume being set for: " newitem, flyOutDuration_Informational, "center", 0, , volumeFlyOutCcolor)
 }
 
-changeDeviceVolumeWith(n) {
+changeDeviceVolumeWith(n, device := "") {
     global soundOptionIndex
-    global soundOptions
+    global soundDevices
     global svv
-    deviceToUpdate := soundOptions[soundOptionIndex]
+    global youTubeBrowser
+    if (device == "")
+        deviceToUpdate := soundDevices[soundOptionIndex]
+    else
+        deviceToUpdate := device
     if (deviceToUpdate == "YouTube") {
         if IsSet(YTChangeVolume) {
-            YTChangeVolume(, , n)
+            YTChangeVolume(youTubeBrowser, , n)
         }
     }
     else {
@@ -92,16 +99,17 @@ changeDeviceVolumeWith(n) {
         RuNWait(command, , "Hide")
         newVolume := GetVolume(deviceToUpdate)
     }
-    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", 1, newVolume, volumeFlyOutCcolor)
+    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", 0, newVolume, volumeFlyOutCcolor)
 }
 setVolumeTo(n) {
     global soundOptionIndex
-    global soundOptions
+    global soundDevices
     global svv
-    deviceToUpdate := soundOptions[soundOptionIndex]
+    global youTubeBrowser
+    deviceToUpdate := soundDevices[soundOptionIndex]
     if (deviceToUpdate == "YouTube") {
         if IsSet(YTChangeVolume) {
-            YTChangeVolume(n, ,)
+            YTChangeVolume(youTubeBrowser, n,)
         }
     }
     else {
@@ -109,7 +117,7 @@ setVolumeTo(n) {
         RuNWait(command, , "Hide")
         newVolume := GetVolume(deviceToUpdate)
     }
-    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", 1, newVolume, volumeFlyOutCcolor)
+    FlyOut(deviceToUpdate " Volume: " newVolume . "`%", 1000, "bottom", 0, newVolume, volumeFlyOutCcolor)
 
 }
 

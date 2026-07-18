@@ -22,32 +22,20 @@ keyTimes(key, n) {
     }
 }
 screenMiddleClick(offsetX := 0, offsetY := 0) {
-    MouseGetPos(&mx, &my)
-    MouseMove((A_ScreenWidth / 2) + offsetX, (A_ScreenHeight / 2) + offsetY, 0)
 
-    Send("{Click}")
-    mouseWiggle()
-    MouseMove(mx, my, 0)
+    MouseMove((A_ScreenWidth / 2) + offsetX, (A_ScreenHeight / 2) + offsetY, 0)
+    Click()
+
 }
 screenMiddleMove(offsetX := 0, offsetY := 0) {
     MouseMove((A_ScreenWidth / 2) + offsetX, (A_ScreenHeight / 2) + offsetY, 0)
-    mouseWiggle()
 }
 mouseReturnPosition(fun) {
     MouseGetPos(&mx, &my)
     fun()
     MouseMove(mx, my, 0)
 }
-keepWiggling(n := 1) {
-    ; TODO: Currently blocks any function that calls this directly
-    sleep 100 ;allow time for A_TimeIdlePhysical to accumulate)
-    global toWiggle
-    while (A_TimeIdlePhysical > 50 and toWiggle) {
-        mouseWiggle(n)
-        Sleep(-1) ; flush buffers
-        Sleep(500)
-    }
-}
+
 global toWiggle := A_TrayMenu
 stopWiggle() {
     global toWiggle
@@ -61,7 +49,7 @@ startWiggle() {
 mouseWiggle(times := 1, pixels := 1) {
     global toWiggle
     ; don't wiggle if someone is using their mouse
-    if (A_TimeIdleMouse < 100) {
+    if (A_TimeIdleMouse < 70) {
         return
 
     }
@@ -86,9 +74,11 @@ MouseDown(n := 50, speed := 2) {
     MouseMove(0, n, speed, "R")
 }
 mouseDoubleClick() {
+    stopWiggle()
     Click()
     sleep 50
     Click()
+    startWiggle()
 }
 isMouseNear(x, y, mode := A_CoordModeMouse) {
     currentCoordMode := A_CoordModeMouse
