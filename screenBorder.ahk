@@ -30,7 +30,7 @@ loop MonitorGetCount() {
  */
 
 
-BorderGui_Constructor(thickness := 8, screen := 1, borderColor := "3f8b48") {
+BorderGui_Constructor(thickness := 8, screen := 1, borderColor := "3f8b48", title := "borderWindow") {
     t := thickness
 
 
