@@ -37,6 +37,7 @@ BorderGui_Constructor(thickness := 8, screen := 1, borderColor := "3f8b48") {
     thisBorder := Gui("-Caption +AlwaysOnTop +ToolWindow -DPIScale +E0x20")
     thisBorder.BackColor := borderColor
     thisBorder.Show("Hide")
+    thisBorder.borderScreen := screen
     ;cut a hole out of the region
     switch screen {
         case 1:

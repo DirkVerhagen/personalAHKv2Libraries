@@ -44,7 +44,7 @@ secondsToTimeString(seconds) {
     newSeconds := Floor(Mod(seconds, 60))
 
 
-    if (seconds < 1) {
+    if (seconds < 0) {
         return "No time!"
     }
 
@@ -151,6 +151,13 @@ BoolToStr(val) => val ? "true" : "false"
 BoolToEnDisStr(val) => val ? "Enabled" : "Disabled"
 BoolToRunSuspendStr(val) => val ? "Running" : "Suspended"
 
+/**
+ * Cycles over an array by a defined increment so you dont have to think about doing modulo math on a 1 indexed array
+ * @param collection The array to cycle over
+ * @param index The current index
+ * @param {Integer} increment The amount to shift in the array
+ * @returns {Number} The new index
+ */
 cycleArrayIndex(collection, index, increment := 1) {
     i := index
     i := i + increment
@@ -194,6 +201,11 @@ arrayIndexToCarousselString(index, items) {
     return carousselString
 }
 
+/**
+ * 
+ * @param timeString A string containing a time formatted as HH:MM:SS (all optional parts)
+ * @returns {Number} The number of seconds it represents
+ */
 TimeToSecs(timeString) { ; MIGHT BE DUPLICATE OF CONVERTSHORT....
     ; Removes spaces and other things to keep an TT:TT:[TT] format
     timeString := RegExReplace(timeString, "[^\d:]")
