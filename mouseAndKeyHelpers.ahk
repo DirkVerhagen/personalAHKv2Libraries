@@ -4,15 +4,17 @@ InstallKeybdHook()
 
 
 SmoothScrollDown(n := 3) {
+    Critical
     Loop n {
         SendEvent("{WheelDown}")
-        Sleep(40)
+        Sleep(30)
     }
 }
 SmoothScrollUp(n := 3) {
+    Critical
     Loop n {
         SendEvent("{WheelUp}")
-        Sleep(40)
+        Sleep(30)
     }
 }
 keyTimes(key, n) {
