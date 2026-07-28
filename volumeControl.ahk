@@ -70,7 +70,30 @@ toggleMute(application := "firefox.exe", toggle := "toggle") {
     RunWait(command, , "Hide")
     return IsMuted(application)
 }
+changeActiveWindowVolume(increment) {
+    activeProcess := WinGetProcessName("A")
+    try {
+        volume := GetVolume(activeProcess)
+    }
+    catch {
+        errorFlyOut("Process " activeProcess " has not made sound recently enough")
+        return
+    }
+    if (increment > 0)
+        newVolume := Min(100, volume + increment + 0.0)
+    else
+        newVolume := Max(0, volume - increment + 0.0)
+    AppVol(activeProcess, newVolume)
+    try {
+        volume := GetVolume(activeProcess)
+    }
+    catch {
+        errorFlyOut("Process " activeProcess " has not made sound recently enough")
+        return
+    }
+    FlyOut(activeProcess " Volume: " newVolume . "`%", 1000, "bottom", 1, newVolume, volumeFlyOutCcolor)
 
+}
 cycleSoundOptions(shift := 1) {
     global soundDevices
     global soundOptionIndex

@@ -136,7 +136,7 @@ YTGoTo(browser := youTubeBrowser, n := 0) { ;Goes back to beginning by default
     }
 }
 
-YTChangeVolume(browser := youTubeBrowser, fixedSetting := 200, increment := 10.0) {
+YTChangeVolume(browser := youTubeBrowser, fixedSetting := 200, increment := 10.0, showfeedback := true) {
 
     try {
         YTActivateYouTube(browser)
@@ -160,7 +160,8 @@ YTChangeVolume(browser := youTubeBrowser, fixedSetting := 200, increment := 10.0
                 }
                 try {
                     browser.JSExecute("document.querySelector('.html5-video-player').setVolume(" . Integer(newVolume) . ");")
-                    flyOut("Youtube Volume: " . Integer(newVolume), 1000, "bottom", 1, newVolume, volumeFlyOutCcolor)
+                    if (showfeedback)
+                        flyOut("Youtube Volume: " . Integer(newVolume), 1000, "center", 0, newVolume, volumeFlyOutCcolor)
                 }
                 catch error as e {
                     errorflyOut("Could not execute volume script :" e.Message)

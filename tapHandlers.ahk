@@ -11,12 +11,30 @@ global DoubleTapTimeOut := 300
 HandleTap(keyID, actionFunc, optionTexts := ["", "", "", "4", "5", "6?!", "Really? 7 Taps?!?"], tapTime := DoubleTapTimeOut) {
     static taps := Map() ;number of taps for this particular key
     static timers := Map() ;Timer callbacks for this particular key
+    static lastTimes := Map()  ; Timestamps of the last tap per key
+
+
+    currentTime := A_TickCount
+    lastTime := lastTimes.Has(keyID) ? lastTimes[keyID] : 0
+    lastTimes[keyID] := currentTime
+
+    ; 1. Auto-repeat Detection (Human taps are rarely faster than 120ms apart)
+    ; If events come in too fast while we are already tapping, it's a key hold
+    if (taps.Has(keyID) && taps[keyID] > 0 && (currentTime - lastTime < 70)) {
+        ; Cancel pending action
+        if timers.Has(keyID) {
+            SetTimer(timers[keyID], 0)
+            timers.Delete(keyID)
+        }
+        taps[keyID] := 0
+        return ; Ignore auto-repeat key-down events completely
+    }
 
     if !taps.Has(keyID)
         taps[keyID] := 0
 
     taps[keyID] += 1
-    if (optionTexts[taps[keyID]] != "")
+    if (taps[keyID] <= optionTexts.Length && optionTexts[taps[keyID]] != "")
         flyOut(optionTexts[taps[keyID]], 1000, "bottom")
 
     ;Remove timer if no more tap detected

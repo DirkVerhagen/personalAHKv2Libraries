@@ -29,7 +29,7 @@ statusFlyOut(text := "This is a status", color := "0000AA") {
 }
 
 errorFlyOut(text := "This is an error") {
-    flyOut(text, flyOutduration_ErrorMessage, "top", 0, 100, "990000")
+    flyOut(text, flyOutduration_ErrorMessage, "top", 1, 100, "990000")
 }
 flyOut(text := "This is a flyout", duration := 1000, position := "center", screen := 1, value := 100, color := "dab327", fontSize := 14) {
     ; Create GUI

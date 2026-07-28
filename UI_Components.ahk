@@ -131,7 +131,11 @@ inputWindow(callbackFunction, prompt := "Enter:", title := "Provide Input", mult
 
     return inputWindow
 }
-
+DebugBox(text) {
+    dbg := Gui("+AlwaysOnTop +Resize", "Debug Output")
+    dbg.Add("Edit", "w600 h400 ReadOnly", text)
+    dbg.Show()
+}
 multiSelectWindow(callbackFunction, options := ["Example Option 1", "Example Option 2"], title := "Provide Input", multiSelect := true, prompt := "Pick some") {
     inputWindow := Gui("+AlwaysOnTop -Caption +ToolWindow +Owner", title)
     width := 400
