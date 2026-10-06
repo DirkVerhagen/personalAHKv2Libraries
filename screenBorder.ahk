@@ -116,18 +116,18 @@ GeneralBorder_Constructor(width, height, thickness, color) {
  * @param {Integer} n Blink the border N times
  * @param {Color} alertColor The color used to blink. It will toggle between its current color and the alertcolor
  */
-borderBlinkAlert(borderGui, n := 3, alertColor := "ff0000") {
-
-    currentColor := borderGui.BackColor
+borderBlinkAlert(borderObject, n := 3, alertColor := "ff0000") {
+    
+    currentColor := borderObject.BackColor
     loop n {
-        borderGui.BackColor := alertColor
+        borderObject.BackColor := alertColor
         sleep 500
-        borderGui.BackColor := currentColor
+        borderObject.BackColor := currentColor
         sleep 500
     }
 
 }
 
-setBorderColor(borderGui, color := "ff0000") {
-    borderGui.BackColor := color
+setBorderColor(borderObject, color := "ff0000") {
+    borderObject.BackColor := color
 }

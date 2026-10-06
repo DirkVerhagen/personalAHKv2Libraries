@@ -10,6 +10,7 @@ global devBraveMatchString := "Dev Brave " . braveMatchString
 global whatsappBraveMatchString := "WhatsApp Brave " . braveMatchString
 global backlogBraveMatchString := "Backlog Brave " . braveMatchString
 global youTubeBraveMatchString := "YouTube Brave " . braveMatchString
+global workBraveMatchString := "Work Brave " . braveMatchString
 global streamKeys := "Streaming Mode"
 global codeMatchString := "Visual Studio Code"
 global youTubeMatchString := "YouTube ahk_exe brave.exe"

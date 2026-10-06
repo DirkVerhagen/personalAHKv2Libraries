@@ -7,7 +7,15 @@
 
 global errorReporting := true
 
-YTgetRunTime(browser) {
+YTgetRunTime(browser := "") {
+    if browser == "" {
+        try {
+            browser := UIA_Browser(youTubeBraveMatchString)
+        }
+        catch {
+            errorFlyOut("No youtube brave found, try play/pausing to set it")
+        }
+    }
     try {
         sliderEl := browser.WaitElement({ ClassName: "ytp-progress-bar" }, 200)
 
@@ -30,7 +38,15 @@ YTgetRunTime(browser) {
     return Number(runTime)
 }
 
-YTgetTotalSeconds(browser) {
+YTgetTotalSeconds(browser := "") {
+    if browser == "" {
+        try {
+            browser := UIA_Browser(youTubeBraveMatchString)
+        }
+        catch {
+            errorFlyOut("No youtube brave found, try play/pausing to set it")
+        }
+    }
     try {
         sliderEl := browser.WaitElement({ ClassName: "ytp-progress-bar" }, 200)
 

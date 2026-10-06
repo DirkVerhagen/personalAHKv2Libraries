@@ -5,7 +5,8 @@ global svv := "C:\svol\svcl.exe"
 global soundDevices := ["Realtek", "JBL", "WH-1000XM6"]
 global soundApplications := ["firefox.exe", "brave.exe"]
 global soundOptionIndex := 2
-global youTubeBrowser
+if (!isSet(youTubeBrowser))
+    global youTubeBrowser := ""
 reportAllVolumes(devices) {
     reportString := ""
     for index, item in devices {
@@ -113,7 +114,7 @@ changeDeviceVolumeWith(n, device := "") {
     else
         deviceToUpdate := device
     if (deviceToUpdate == "YouTube") {
-        if IsSet(YTChangeVolume) {
+        if IsSet(YTChangeVolume) and IsObject(youTubeBrowser) {
             YTChangeVolume(youTubeBrowser, , n)
         }
     }
@@ -131,7 +132,7 @@ setVolumeTo(n) {
     global youTubeBrowser
     deviceToUpdate := soundDevices[soundOptionIndex]
     if (deviceToUpdate == "YouTube") {
-        if IsSet(YTChangeVolume) {
+        if IsSet(YTChangeVolume) and IsObject(youTubeBrowser) {
             YTChangeVolume(youTubeBrowser, n,)
         }
     }
